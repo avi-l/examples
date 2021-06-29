@@ -27,17 +27,9 @@ let cacheMiddleware = (duration) => {
     }
 }
 
-const CommentRoute = require('./routes/commentRoutes');
-const VideosRoute = require('./routes/videoRoutes');
-const FeedbacksRoute = require('./routes/feedbackRoutes');
-const ChannelsRoute = require('./routes/channelRoutes');
-const RepliesRoute = require('./routes/replyRoutes');
-const UsersRoute = require('./routes/userRoutes');
-const LandingsRoute = require('./routes/landingRoutes');
-const ContributorsRoute = require('./routes/contributorRoutes');
-const ReputationsRoute = require('./routes/reputationRoutes');
-const RepMgtOptsRoute = require('./routes/repMgtOptsRoutes');
 
+const VideosRoute = require('./routes/videoRoutes');
+const UsersRoute = require('./routes/userRoutes');
 
 const connectToLocalDb = () => {
     mongoose.connect(config.localDB, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
@@ -65,16 +57,9 @@ mongoose.connect(config.remoteDB, {
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use('/channels', ChannelsRoute);
-app.use('/comments', CommentRoute);
-app.use('/feedbacks', FeedbacksRoute);
-app.use('/replies', RepliesRoute);
 app.use('/users', UsersRoute);
 app.use('/videos', VideosRoute);
-app.use('/landings', cacheMiddleware(30), LandingsRoute);
-app.use('/contributor', ContributorsRoute);
-app.use('/reputation', ReputationsRoute);
-app.use('/repMgtOptions', RepMgtOptsRoute);
+
 
 app.get('/health', (req, res) => res.send('Hello healthy app!'))
 
