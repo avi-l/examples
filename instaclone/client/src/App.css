@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
+a{
+    color:black !important;
+}
+body{
+    background-color: #fafafa;
+}
+.brand-logo,.auth-card{
+    font-family: 'Grand Hotel', cursive;
+    margin-left:10px;
+}
+
+.mycard{
+    margin: 30px;
+}
+.auth-card{
+    padding: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: 10px auto;
+}
+
+/* label underline focus color */
+.input-field input[type=text][type=password]:focus {
+    border-bottom: 1px solid rgba(5, 212, 235, 0.995) !important;
+    box-shadow: 0 1px 0 0 #000 !important;
+}
+.gallery{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.item{
+    width: 30%;
+    margin-bottom: 10px;
+    margin-block: 10px;
+}
+
+.home-card{
+    max-width: 500px;
+    height: max-content;
+    margin: 26px auto;
+}
+#toast-container{
+    top:70px !important;
+    right:50px !important;
+    left: auto !important;
+}
+.like-unlike {
+    color: rgba(255, 0, 0, 0.783);
+}
+.material-icons:hover{
+    cursor: pointer;
+    color: rgba(179, 0, 255, 0.783);
+}
+.nav-icons img{ 
+    width: 25px;
+    height: 25px;;
+    border-radius:80px;
+    margin: -3px;
+    /* margin-top:17px;   */
+    /* viewport-fit:auto; */
+}
+.nav-icons i{ 
+    width:25px;
+    height:25px;
+    /* border-radius:80px; */
+    margin: -3px;
+    color: black;
+    /* viewport-fit:auto; */
+}
+.modal{
+    color:black;
+}
+.prof-pic-icon { 
+    width:25px;
+    height:25px;
+    border-radius:80px;
+    margin: 3px 3px 3px 3px;
+    /* viewport-fit:auto; */
+}
+.userName { 
+    padding:5px;
+    font-size:medium; 
+
+}
