@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: 2010-09-09
+# Parameters:
+#   CertificateArn:
+#     Type: String
+#     Default: arn:aws:acm:FILL_IN_THE_BLANK_CERT_ARN
+#     Description: ARN of cert for Public ALB
+Resources:
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: DEV01-USER-POOL
+      AliasAttributes:
+        - preferred_username
+        - email
+        - phone_number
+      Schema:
+        - AttributeDataType: "String"
+          Name: email
+          Required: true
+          Mutable: true  
+        - AttributeDataType: "String"
+          Name: contributorCode
+          Required: false
+          Mutable: true
+      AutoVerifiedAttributes:
+        - email
+      EmailConfiguration:
+        # EmailSendingAccount: DEVELOPER
+        # From: "No Reply <no-reply@FILL_IN_THE_BLANK_DOMAIN.COM>"
+        SourceArn: "arn:aws:ses:us-east-1:467308492981:identity/no-reply@FILL_IN_THE_BLANK_DOMAIN.COM"
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+      DeviceConfiguration:
+        ChallengeRequiredOnNewDevice: true
+        DeviceOnlyRememberedOnUserPrompt: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+          TemporaryPasswordValidityDays: 1
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+          - Name: verified_phone_number
+            Priority: 2
+
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: FILL_IN_THE_BLANK_DOMAIN
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  CognitoUserPoolFacebookProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      AttributeMapping:
+        email: email
+        Username: id
+        preferred_username: name
+        contributor: contributor
+      ProviderDetails:
+        client_id: "FILL_IN_THE_BLANK"
+        client_secret: "FILL_IN_THE_BLANK"
+        authorize_scopes: "public_profile,email"
+      ProviderName: Facebook
+      ProviderType: Facebook
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  CognitoUserPoolGoogleProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      AttributeMapping:
+        email: email
+        Username: sub
+        preferred_username: name
+        email_verified: email_verified
+        contributor: contributor
+      ProviderDetails:
+        client_id: "FILL_IN_THE_BLANK"
+        client_secret: "FILL_IN_THE_BLANK"
+        authorize_scopes: "profile email openid"
+      ProviderName: Google
+      ProviderType: Google
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn:
+      - CognitoUserPoolGoogleProvider
+      - CognitoUserPoolFacebookProvider
+    Properties:
+      ClientName: FILL_IN_THE_BLANK
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+        - aws.cognito.signin.user.admin
+      CallbackURLs:
+        - http://localhost:3010/FILL_IN_THE_BLANK
+        - https://FILL_IN_THE_BLANK
+      LogoutURLs:
+        - http://localhost:3010/
+        - https://FILL_IN_THE_BLANK
+      PreventUserExistenceErrors: ENABLED
+      UserPoolId:
+        Ref: CognitoUserPool
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+        - Facebook
+        - Google
+      AccessTokenValidity: 3600
+      IdTokenValidity: 3600
+      TokenValidityUnits:
+        AccessToken: "seconds"
+        IdToken: "seconds"
+
+Outputs:
+  Dev01UserPoolId:
+    Value:
+      Ref: CognitoUserPool
+    Export:
+      Name: Dev01UserPoolId
+
+  Dev01UserPoolDomain:
+    Value:
+      Ref: CognitoUserPoolDomain
+    Export:
+      Name: Dev01UserPoolDomain
+
+  Dev01UserPoolClientId:
+    Value:
+      Ref: CognitoUserPoolClient
+    Export:
+      Name: Dev01UserPoolClientId

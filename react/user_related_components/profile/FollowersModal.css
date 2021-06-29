@@ -1,0 +1,61 @@
+.followers-modal{
+   margin-top: 100px;
+   margin-bottom: auto;
+   border-radius: 12px;
+   /* background-color: #e2e8f0;    */
+}
+.followers-modal-title{
+   align-items: center;
+   /* display:flex; */
+   flex-grow: 1;
+   font-size: 16px;
+   font-weight: 400;
+   justify-content: center;
+   line-height: 24px;
+   text-align: center;
+}
+.followers-modal-body{
+   
+   margin-bottom: auto;
+   color: #1a202c;
+   text-align: left;
+   border-radius: .25rem;
+   /* background-color: #e2e8f0;    */
+}
+.followers-modal-list-name {
+   text-indent: 56px; 
+}
+.followers-loading {
+    margin-top: 200px;
+    text-align: center; 
+}
+.followers-hover {
+   cursor: pointer;
+}
+.followers-list-group {
+   /* height:300vmax; */
+   /* padding: 5px 10px; */
+
+}
+.followers-list-item {
+   /* padding-bottom: 8px; */
+   /* padding-top: 8px; */
+   border: none;
+}
+.followers-card-body {
+   flex: 1 1 auto;
+   min-height: 1px;
+   padding: 1rem;
+}
+.followers-scrollable{
+   overflow-y: auto;
+   max-height: 200px;
+}
+
+.followers-avatar {
+   margin-right: 8px;
+   vertical-align: middle;
+   width: 45px;
+   height: 45px;
+   border-radius: 50%;
+}
