@@ -16,8 +16,8 @@ echo "module.exports = {
 };" > mailerCredentials.js
 
 echo "module.exports = {
-    CLOUDKARAFKA_TOPIC_PREFIX: 'fylua7c9-',
-    CLOUDKARAFKA_BROKERS: 'rocket-01.srvs.cloudkafka.com:9094,rocket-02.srvs.cloudkafka.com:9094,rocket-03.srvs.cloudkafka.com:9094',
+    CLOUDKARAFKA_TOPIC_PREFIX: 'xxxxxx-',
+    CLOUDKARAFKA_BROKERS: 'xxxxxxxxxx.cloudkafka.com:9094,xxxxxxxxx.cloudkafka.com:9094,xxxxxxxxxx.cloudkafka.com:9094',
     CLOUDKARAFKA_USERNAME: '$DEV_KARAFKA_USERNAME',
     CLOUDKARAFKA_PASSWORD: '$DEV_KARAFKA_PASSWORD',
 };" > kafkaCredentials.js
