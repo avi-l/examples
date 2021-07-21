@@ -7,17 +7,17 @@ import storeContext from "../../stores/storeContext";
 import { isUserLoggedIn, changeUserPass } from "./userManagement";
 import './ChangePassword.css';
 import PasswordChecklist from "react-password-checklist"
-
+import { sendEmailToUser } from "../email/sendEmail_api";
 
 const ChangePasswordForm = observer(() => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
     const store = useContext(storeContext);
     const { modalStore, loginStore } = store;
     const { password, setPassword,
         passwordCopy, setPasswordCopy,
     } = loginStore;
     const { setShowErrorPopup } = modalStore;
-    const [isLoading, setIsLoading] = useState(false);
-    const [oldPassword, setOldPassword] = useState('');
 
     const submitPassChange = async (event) => {
         event.preventDefault();
@@ -26,11 +26,22 @@ const ChangePasswordForm = observer(() => {
             .then(async (currentUser) => {
                 await changeUserPass(currentUser, oldPassword, password)
                     .then((res) => {
+                        if (res === 'SUCCESS') {
+                            const { email } = currentUser.attributes
+                            const MESSAGES = {
+                                subject: `LampLighter.Social Password Changed`,
+                                body: `Hello ${currentUser.attributes.preferred_username || currentUser.attributes.username}! <br/>
+                                  You have successfully changed your password. 
+                                  Thank you for taking security seriously. <br/>
+                                  -Admin Team`,
+                            }
+                            sendEmailToUser({ email, subject: MESSAGES.subject, body: MESSAGES.body })
+                        }
                         setShowErrorPopup(
                             {
                                 show: !!res,
                                 message: res.message || res,
-                                tryAgain: !res.code !== "LimitExceededException" && !res
+                                tryAgain: res.code !== "LimitExceededException" && !!res.code
                             }
                         );
                         setIsLoading(false);
@@ -96,31 +107,26 @@ const ChangePasswordForm = observer(() => {
                 <Form.Group className="input-group">
                     {!isLoading &&
                         <Button
-                            className="btn form-control submit"
+                            variant="primary"
                             type="submit"
                         >
                             <i className="fas fa-user-plus" /> Confirm
-                </Button>}
+                        </Button>}
                 </Form.Group>
                 <Form.Group>
                     {!isLoading &&
                         <Button
-                            className="btn form-control submit"
+                            variant="secondary"
                             type="button"
-                            id="btn-signup"
-                            onClick={() => forceReload("/signIn")}
+                            onClick={() => forceReload("/profile")}
                         >
                             <i className="fas fa-sign-in-alt fa-flip-horizontal" /> Cancel
-                </Button>
+                        </Button>
                     }
                     {isLoading &&
-                        <Button
-                            className="btn form-control submit"
-                            type="button"
-                            id="btn-signup"
-                        >
+                        <Button variant="primary">
                             Submitting... &nbsp;
-                <i className="fas fa-spinner fa-pulse"></i>
+                            <i className="fas fa-spinner fa-pulse"></i>
                         </Button>
                     }
                 </Form.Group>
