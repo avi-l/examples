@@ -7,25 +7,24 @@ import { observer } from "mobx-react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import PasswordChecklist from "react-password-checklist"
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const ForgotPasswordForm = observer(() => {
-    const store = useContext(storeContext);
-    const { modalStore, loginStore } = store;
-    const {
-        email,
-        username,
-        password, setPassword,
-        passwordCopy, setPasswordCopy,
-    } = loginStore;
-    const { setShowErrorPopup } = modalStore;
     const [isLoading, setIsLoading] = useState(false);
     const [verifyCode, setVerifyCode] = useState('');
+    const store = useContext(storeContext);
+    const { modalStore, loginStore } = store;
+    const { username, password, setPassword, email,
+        passwordCopy, setPasswordCopy } = loginStore;
+    const { setShowErrorPopup } = modalStore;
 
     const submitPasswordReset = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         await submitNewPassword(username, verifyCode, password)
             .then(async () => {
+                toast.success(`Password Succesfully Changed! Logging in now..`, { position: "top-center" })
                     await signIn(username, password)
                         .then(() => {
                             forceReload("/");
@@ -36,19 +35,13 @@ const ForgotPasswordForm = observer(() => {
                         });
             })
             .catch(err => {
-                setShowErrorPopup({ show: true, message: err.message });
+                setShowErrorPopup({ show: true, message: err.message, tryAgain: true });
                 setIsLoading(false);
             });
     };
 
     return (
         <Form className="form-signin" onSubmit={submitPasswordReset}>
-            <h3
-                className="h3 mb-3 font-weight-normal"
-                style={{ textAlign: "center" }}
-            >
-                <i className="far fa-lightbulb" /> FILL_IN_THE_BLANK
-            </h3>
             <p>
                 A password reset verification code has been sent to {email}.
                 In order to recover your account, please fill out details below
@@ -95,7 +88,6 @@ const ForgotPasswordForm = observer(() => {
                         minLength={8}
                         value={password}
                         valueAgain={passwordCopy}
-                    // onChange={(isValid) => {}}
                     />
                 </Form.Group>}
             <Form.Group className="input-group">
@@ -109,16 +101,6 @@ const ForgotPasswordForm = observer(() => {
                 </Button>}
             </Form.Group>
             <Form.Group>
-                {!isLoading &&
-                    <Button
-                        className="btn form-control submit"
-                        type="button"
-                        id="btn-signup"
-                        onClick={() => forceReload("/signIn")}
-                    >
-                        <i className="fas fa-sign-in-alt fa-flip-horizontal" /> Cancel
-                </Button>
-                }
                 {isLoading &&
                     <Button
                         className="btn form-control submit"
