@@ -11,15 +11,16 @@ const DisplayUserComments = (props) => {
     const [displayComments, setDisplayComments] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [remarkType, setRemarkType] = useState('Comment')
+    let limit = 35;
 
     useEffect(() => {
         setIsLoading(true)
-        getUserComments({ userId, limit: 35 })
+        getUserComments({ userId, limit })
             .then(res => setAllComments(res.data))
             .catch(err => console.log(err))
-        getUserFeedbacks({ userId })
-            .then(res => setFeedbacks(res.data))
-            .catch(err => console.log(err))
+        // getUserFeedbacks({ userId })
+        //     .then(res => setFeedbacks(res.data))
+        //     .catch(err => console.log(err))
     }, [userId])
 
     useEffect(() => {
@@ -35,10 +36,11 @@ const DisplayUserComments = (props) => {
             <h6 className="d-flex align-items-center profile-mb-3">
                 <i className="material-icons mr-2" style={{ color: '#3FB8AF' }}>speaker_notes</i>
                 <Nav justify variant="tabs" defaultActiveKey={remarkType}>
+                    <Nav.Link eventKey="All" onSelect={() => setRemarkType('All')}>All</Nav.Link>
                     <Nav.Link eventKey="Comment" onSelect={() => setRemarkType('Comment')}>Comments</Nav.Link>
                     <Nav.Link eventKey="Question" onSelect={() => setRemarkType('Question')}>Questions</Nav.Link>
-                    <Nav.Link eventKey="Feedback" onSelect={() => setRemarkType('Feedback')}>Feedbacks</Nav.Link>
-                    <Nav.Link eventKey="All" onSelect={() => setRemarkType('All')}>All</Nav.Link>
+                    {/* <Nav.Link eventKey="Feedback" onSelect={() => setRemarkType('Feedback')}>Feedbacks</Nav.Link> */}
+                    
                 </Nav>
             </h6>
             {isLoading && <div className="loading" style={{ textAlign: "center" }}> <Loading /></div>}
@@ -60,7 +62,7 @@ const DisplayUserComments = (props) => {
                     }
                 </div>
             }
-            {remarkType === 'Feedback' &&
+            {/* {remarkType === 'Feedback' &&
                 <div className="profile-comment-map profile-scrollable">
                     {!feedbacks.length && !isLoading
                         ? <small>{userHandle} has no Feedbacks yet</small>
@@ -77,7 +79,7 @@ const DisplayUserComments = (props) => {
                         })
                     }
                 </div>
-            }
+            } */}
         </div>
     )
 }

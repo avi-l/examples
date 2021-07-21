@@ -19,31 +19,79 @@ const ProfileDisplay = observer((props) => {
   const { profileUser, setProfileUser, user } = userStore;
   const { setShowUploadPicModal, setShowEditProfileModal,
     setShowFollowersModal } = modalStore;
+  const blankAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   const followUnfollow = (route) => {
-    followUnfollowUser(route,
-      {
-        followee: profileUser,
-        follower: user
-      })
+    const followee = { userId: profileUser.userId }
+    const follower = { userId: user.userId }
+    let newFollowersArr;
+
+    followUnfollowUser(route, { followee, follower })
       .then(() => {
         if (route === '/users/follow') {
-          const newFollowersArr = [...profileUser.followers]
-          newFollowersArr.splice(0, 0, {
-            userId: user.userId,
-            userHandle: user.userHandle,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            avatar: user.avatar
-          })
-          setProfileUser({ ...profileUser, followers: newFollowersArr })
+          newFollowersArr = [...profileUser.followers]
+          newFollowersArr.splice(0, 0, follower)
         }
         else {
-          const newFollowersArr = profileUser.followers.filter((val) => val.userId !== loggedInUserId)
-          setProfileUser({ ...profileUser, followers: newFollowersArr })
+          newFollowersArr = profileUser.followers.filter((val) => val.userId !== loggedInUserId)
         }
+        setProfileUser({ ...profileUser, followers: newFollowersArr })
       })
       .catch(err => console.error(err))
+  }
+
+  const displayAvatar = () => {
+    return (
+      <>
+        <Image roundedCircle
+          src={profileUser?.avatar || blankAvatar}
+          alt={profileUser?.userHandle} className="profile-avatar"
+        />
+        {profileUser?.userId === loggedInUserId &&
+          <i className="material-icons profile-clickable-icon"
+            title="Upload Profile Pic"
+            onClick={() => {
+              setShowUploadPicModal(true)
+            }}>add_a_photo</i>
+        }
+      </>
+    )
+  }
+
+  const displayFollowTabs = () => {
+    return (
+      <ListGroup horizontal>
+        <ListGroup.Item className="profile-followers-hover"
+          onClick={() => setShowFollowersModal({ show: true, user: profileUser, loggedInUserId, showType: 'followers' })}
+        > Followers: {profileUser?.followers?.length}</ListGroup.Item>
+        <ListGroup.Item className="profile-followers-hover"
+          onClick={() => setShowFollowersModal({ show: true, user: profileUser, loggedInUserId, showType: 'following' })}
+        > Following: {profileUser?.following?.length}</ListGroup.Item>
+      </ListGroup>
+    )
+  }
+
+  const displayFollowBtns = () => {
+    if (profileUser?.userId !== loggedInUserId) {
+      return (
+        <>
+          {profileUser?.followers?.find(val => val.userId === loggedInUserId)
+            ? <Button variant="outline-primary"
+              onClick={() => followUnfollow('/users/unfollow')}>Unfollow</Button>
+            : <Button variant="outline-primary"
+              onClick={() => followUnfollow('/users/follow')}>Follow</Button>
+          }
+        </>
+      )
+    }
+    else {
+      return (
+        <>
+          <Button variant="outline-primary"
+            onClick={() => { setShowEditProfileModal(true) }}>Edit Profile</Button>
+        </>
+      )
+    }
   }
 
   return (
@@ -54,47 +102,17 @@ const ProfileDisplay = observer((props) => {
             <div className="col-md-4 profile-mb-3">
               <div className="profile-card">
                 <div className="profile-card-body">
-                  <div className="d-flex flex-column align-items-center text-center">
-                    <Image roundedCircle src={profileUser?.avatar}
-                      alt={profileUser?.userHandle} className="profile-avatar"
-                    />
-                    {profileUser?.userId === loggedInUserId &&
-                      <i className="material-icons profile-clickable-icon" title="Upload Profile Pic" onClick={() => {
-                        setShowUploadPicModal(true)
-                      }}>add_a_photo</i>}
-                    <div className="mt-3">
-                      <h5>{profileUser?.userHandle}</h5>
-                      <ListGroup horizontal>
-                        <ListGroup.Item className="profile-followers-hover"
-                          onClick={() => setShowFollowersModal({ show: true, user: profileUser, showType: 'followers', action: followUnfollow() })}
-                        > Followers: {profileUser?.followers?.length}</ListGroup.Item>
-                        <ListGroup.Item className="profile-followers-hover"
-                          onClick={() => setShowFollowersModal({ show: true, user: profileUser, showType: 'following', action: followUnfollow() })}
-                        > Following: {profileUser?.following?.length}</ListGroup.Item>
-                      </ListGroup>
-                      <br />
-                      {profileUser?.userId !== loggedInUserId &&
-                        <>
-                          {profileUser?.followers?.find(val => val.userId === loggedInUserId)
-                            ? <Button variant="outline-primary"
-                              onClick={() => followUnfollow('/users/unfollow')}>Unfollow</Button>
-                            : <Button variant="outline-primary"
-                              onClick={() => followUnfollow('/users/follow')}>Follow</Button>
-                          }
-                          <Button variant="outline-primary">Message</Button>
-                        </>
-                      }
-                      {profileUser?.userId === loggedInUserId &&
-                        <Button variant="outline-primary" onClick={() => {
-                          setShowEditProfileModal(true)
-                        }}>Edit Profile</Button>
-                      }
-                    </div>
+                  <div className="d-flex flex-column align-items-center text-center profile-avatar-card">
+                    <>{displayAvatar()}</>
+                    <h5 className="mt-3 ">{profileUser?.userHandle}</h5>
+                    <>{displayFollowTabs()}</>
+                    <br />
+                    <>{displayFollowBtns()}</>
                   </div>
                 </div>
               </div>
               {profileUser?.userId === loggedInUserId &&
-                <div className="profile-card mt-3">
+                <div className="profile-card mt-3 profile-search-users">
                   <SearchUsers />
                 </div>
               }
@@ -110,17 +128,17 @@ const ProfileDisplay = observer((props) => {
                       {profileUser?.firstName} {profileUser?.lastName}
                     </div>
                   </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col-sm-3">
-                      <h6 className="profile-mb-0">Email</h6>
-                    </div>
-                    <div className="col-sm-9 text-secondary">
-                      {profileUser?.email}
-                    </div>
-                  </div>
                   {profileUser?.userId === loggedInUserId &&
                     <>
+                      <hr />
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <h6 className="profile-mb-0">Email</h6>
+                        </div>
+                        <div className="col-sm-9 text-secondary">
+                          {profileUser?.email}
+                        </div>
+                      </div>
                       <hr />
                       <div className="row">
                         <div className="col-sm-3">
@@ -142,7 +160,6 @@ const ProfileDisplay = observer((props) => {
                   }
                 </div>
               </div>
-
               <div className="row profile-gutters-sm">
                 <div className="col-sm-6 profile-mb-3">
                   <div className="profile-card profile-h-100">

@@ -10,10 +10,12 @@ import { forceReload } from '../../../utilities/forceReload';
 import { useLocation } from 'react-router-dom';
 import queryString from "query-string";
 
-const Profile = observer(() => {
-  const [isLoading, setIsLoading] = useState(true)
+const ProfilePage = observer(() => {
+  const [isLoading, setIsLoading] = useState(true);
+
   const urlSearchParams = queryString.parse(useLocation().search);
   const profileId = urlSearchParams._id;
+
   const store = useContext(storeContext);
   const { userStore } = store;
   const { user, profileUser, setProfileUser } = userStore;
@@ -21,10 +23,8 @@ const Profile = observer(() => {
 
   useEffect(() => {
     setProfileUser(profileId ? { userId: profileId } : { userId: user.userId })
-    console.log(profileUser.userId)
     if (profileUser.userId) {
-      const isFullDetails = profileUser.userId !== profileId 
-      setUserProfileData(profileUser, setProfileUser, isFullDetails)
+      setUserProfileData(profileUser, setProfileUser)
         .then((res) => {
           if (!res) {
             return toast.error(`User Not Found`, toastOptions)
@@ -49,4 +49,4 @@ const Profile = observer(() => {
     <ProfileDisplay loggedInUserId={user.userId} />
   )
 });
-export default Profile;
+export default ProfilePage;

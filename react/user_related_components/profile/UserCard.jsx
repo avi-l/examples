@@ -18,7 +18,7 @@ const UserCard = (props) => {
         setIsLoading(true)
         setCardUser({ userId: cardUserId })
         if (cardUser.userId) {
-            setUserProfileData(cardUser, setCardUser)
+            setUserProfileData(cardUser, setCardUser, false)
                 .then((res) => {
                     if (!res) {
                         setIsLoading(false)

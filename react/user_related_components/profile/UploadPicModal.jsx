@@ -20,8 +20,8 @@ const UploadPicModal = observer(() => {
   const { modalStore, userStore } = store;
   const { profileUser, setProfileUser } = userStore;
   const { showUploadPicModal, setShowUploadPicModal } = modalStore;
-  const CLOUDINARY_API_KEY = "88888888888";
-  const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/cloudinary/image/upload"
+  const CLOUDINARY_API_KEY = "9999999999";
+  const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/image/upload"
   const toastOptions = {
     position: "top-right",
     autoClose: 2000,

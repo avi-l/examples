@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Form, Modal, Button, Col, Row } from 'react-bootstrap';
 import storeContext from '../../../stores/storeContext';
 import { observer } from 'mobx-react';
-import { updateUserDetails, checkEmailExists, checkInvite } from '../user_api'
+import { updateUserDetails, checkEmailExists, checkInvite, checkUserHandleExists } from '../user_api'
 import { isUserLoggedIn, logout, updateCognitoUserAttributes } from '../userManagement'
 import './EditProfileModal.css'
 import { isEmail, isAlphanumeric } from 'validator'
@@ -16,7 +16,7 @@ const EditProfileModal = observer(() => {
     const { showEditProfileModal, setShowEditProfileModal } = modalStore;
     const { profileUser, setProfileUser, setUser } = userStore;
     const [isLoading, setIsLoading] = useState(false);
-    const [newEmail, setNewEmail] = useState(profileUser?.email);
+    // const [newEmail, setNewEmail] = useState(profileUser?.email);
     const [newFirstName, setNewFirstName] = useState(profileUser?.firstName || '');
     const [newLastName, setNewLastName] = useState(profileUser?.lastName || '');
     const [newPhone, setNewPhone] = useState(profileUser?.mobilePhone || '');
@@ -32,7 +32,7 @@ const EditProfileModal = observer(() => {
     const MESSAGES = {
         invalidEmail: 'Invalid Email Format',
         invalidUserHandle: 'Alphanumeric only please',
-        emailTaken: 'Email address already in use',
+        // emailTaken: 'Email address already in use',
         userHandleTaken: 'The username is already taken',
     }
 
@@ -55,13 +55,18 @@ const EditProfileModal = observer(() => {
         setMessageUserHandle('')
     }
 
-    const checkEmailInUse = async () => {
-        return await checkInvite({ email: newEmail })
+    // const checkEmailInUse = async () => {
+    //     return await checkInvite({ email: newEmail })
+    //         .then((res) => { return res.data; })
+    //         .catch(() => { return false; })
+    //         || await checkEmailExists({ email: newEmail })
+    //             .then((res) => { return res.data; })
+    //             .catch(() => { return false; })
+    // }
+    const userHandleInUse = async () => {
+        return await checkUserHandleExists({ userHandle: newUserHandle })
             .then((res) => { return res.data; })
             .catch(() => { return false; })
-            || await checkEmailExists({ email: newEmail })
-                .then((res) => { return res.data; })
-                .catch(() => { return false; })
     }
 
     const handleClose = () => {
@@ -72,24 +77,32 @@ const EditProfileModal = observer(() => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true)
-
-        if (newEmail && newEmail !== profileUser?.email) {
-            if (!isEmail(newEmail)) {
-                toast.error(`${MESSAGES.invalidEmail}`, { position: "top-center" })
-                setIsLoading(false)
-                return null;
-            }
-            if (await checkEmailInUse()) {
-                toast.error(`${MESSAGES.invalidEmail}`, { position: "top-center" })
+        if(newUserHandle && newUserHandle !== profileUser?.userHandle)
+        {
+            if (await userHandleInUse())
+            {
+                toast.error(`${MESSAGES.userHandleTaken}`, { position: "top-center" })
                 setIsLoading(false)
                 return null;
             }
         }
+        // if (newEmail && newEmail !== profileUser?.email) {
+        //     if (!isEmail(newEmail)) {
+        //         toast.error(`${MESSAGES.invalidEmail}`, { position: "top-center" })
+        //         setIsLoading(false)
+        //         return null;
+        //     }
+        //     if (await checkEmailInUse()) {
+        //         toast.error(`${MESSAGES.invalidEmail}`, { position: "top-center" })
+        //         setIsLoading(false)
+        //         return null;
+        //     }
+        // }
 
         const newUserInfo = {
             ...profileUser,
             userHandle: newUserHandle || profileUser?.userHandle,
-            email: newEmail || profileUser?.email,
+            // email: newEmail || profileUser?.email,
             firstName: newFirstName || profileUser?.firstName,
             lastName: newLastName || profileUser?.lastName,
             mobilePhone: newPhone || profileUser?.mobilePhone,
@@ -111,7 +124,7 @@ const EditProfileModal = observer(() => {
                     //we only want to update cognito user pool if not social idp login
                     //because social logins overwrite mapped user pool attributes
                     let cognitoAttributes = {
-                        'email': newEmail || profileUser?.email,
+                        // 'email': newEmail || profileUser?.email,
                         'family_name': newLastName || profileUser?.lastName,
                         'given_name': newFirstName || profileUser?.firstName,
                         'preferred_username': newUserHandle || profileUser?.userHandle
@@ -181,14 +194,14 @@ const EditProfileModal = observer(() => {
                                     value={newLastName}
                                     onChange={(e) => setNewLastName(e.target.value)} />
                             </Col>
-                            <Col xs="auto">
+                            {/* <Col xs="auto">
                                 <Form.Control
                                     type="text"
                                     className="bg-light form-control"
                                     placeholder={profileUser?.email || 'email@example.com'}
                                     value={newEmail}
                                     onChange={(e) => setNewEmail(e.target.value)} />
-                            </Col>
+                            </Col> */}
                             <Col xs="auto">
                                 <Form.Control
                                     type="tel"
