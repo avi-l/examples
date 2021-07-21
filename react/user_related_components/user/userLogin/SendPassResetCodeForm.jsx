@@ -1,5 +1,4 @@
-import { forceReload } from "../../../utilities/forceReload";
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { sendResetCode } from "../userManagement";
 import storeContext from "../../../stores/storeContext";
 import { observer } from "mobx-react";
@@ -7,14 +6,13 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 const SendPassResetCodeForm = observer(() => {
-
+    const [isLoading, setIsLoading] = useState(false);
     const store = useContext(storeContext);
     const { modalStore, loginStore } = store;
     const { username, setUsername, setEmail,
         setIsForgotPassForm, setIsSendPassResetCodeForm
     } = loginStore;
     const { setShowErrorPopup } = modalStore;
-    const [isLoading, setIsLoading] = useState(false);
 
     const sendResetCodeToUser = async (event) => {
         event.preventDefault();
@@ -44,17 +42,11 @@ const SendPassResetCodeForm = observer(() => {
 
     return (
         <Form className="form-signin" onSubmit={sendResetCodeToUser}>
-            <h3
-                className="h3 mb-3 font-weight-normal"
-                style={{ textAlign: "center" }}
-            >
-                <i className="far fa-lightbulb" /> FILL_IN_THE_BLANK
-            </h3>
             <Form.Label>
                 Forgot Password? Enter your username and we will send a password reset
                 code to your email
             </Form.Label>
-            <div className="input-group">
+            <Form.Group className="input-group">
                 <Form.Control
                     type="code"
                     id="inputUsername"
@@ -66,8 +58,7 @@ const SendPassResetCodeForm = observer(() => {
                     required
                     autoFocus
                 />
-            </div>
-
+            </Form.Group>
             <Form.Group className="input-group">
                 {!isLoading &&
                     <Button
@@ -75,22 +66,12 @@ const SendPassResetCodeForm = observer(() => {
                         type="submit"
                         disabled={!username}
                     >
-                        <i className="fas fa-sign-in-alt " />
-                                Send Reset Code
+                        <i className="far fa-paper-plane" />
+                             {'  '} Send Reset Code
                             </Button>
                 }
             </Form.Group>
             <Form.Group>
-                {!isLoading &&
-                    <Button
-                        className="btn form-control submit"
-                        type="button"
-                        id="btn-signup"
-                        onClick={() => forceReload("/signIn")}
-                    >
-                        <i className="fas fa-sign-in-alt fa-flip-horizontal" /> Cancel
-                </Button>
-                }
                 {isLoading &&
                     <Button
                         className="btn form-control submit"
