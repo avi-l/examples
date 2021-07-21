@@ -24,10 +24,73 @@ UserRoute.route('/signCloudindaryURL').post(async (req, res) => {
 })
 
 UserRoute.route('/checkEmailExists').post((req, res) => {
-    console.log(req.body)
     Users.exists({ 'email': { $eq: req.body.email } })
         .then(Found => {
             res.send(Found);
+        })
+        .catch(err => res.send(err));
+});
+
+UserRoute.route('/checkUserExists').post((req, res) => {
+    let userHandle = req.body.userHandle;
+    Users.exists({ 'userId': req.body.userId })
+        .then(exists => {
+            Users.countDocuments({ userHandle: { $regex: req.body.userHandle, $options: 'i' } }, (err, result) => {
+                if (err) {
+                    res.send(err)
+                }
+                else {
+                    if (!exists && result > 0) {
+                        let freeHandle = false;
+                        while (!freeHandle) {
+                            let suggestion = userHandle.concat(result.toString())
+                            Users.exists({ 'userHandle': suggestion })
+                            .then(found => {
+                                if(!found) {
+                                    freeHandle = true
+                                    res.json({ exists, count: result, suggestion })
+                                }
+                                else result+=1
+                            })
+                            .catch(err => console.log(err))
+                            freeHandle = true;
+                        }
+                    }
+                    else res.json({ exists, count: result, suggestion: userHandle })
+                }
+            })
+        })
+        .catch(err => res.send(err));
+});
+
+UserRoute.route('/checkUserHandleExists').post((req, res) => {
+    let userHandle = req.body.userHandle;
+    Users.exists({ userHandle: { $regex: req.body.userHandle, $options: 'i' } })
+        .then(exists => {
+            Users.countDocuments({ userHandle: { $regex: req.body.userHandle, $options: 'i' } }, (err, result) => {
+                if (err) {
+                    res.send(err)
+                }
+                else {
+                    if (result > 0) {
+                        let freeHandle = false;
+                        while (!freeHandle) {
+                            let suggestion = userHandle.concat(result.toString())
+                            Users.exists({ 'userHandle': suggestion })
+                            .then(found => {
+                                if(!found) {
+                                    freeHandle = true
+                                    res.json({ exists, count: result, suggestion })
+                                }
+                                else result+=1
+                            })
+                            .catch(err => console.log(err))
+                            freeHandle = true;
+                        }
+                    }
+                    else res.json({ exists, count: result, suggestion: userHandle })
+                }
+            })
         })
         .catch(err => res.send(err));
 });
@@ -52,7 +115,7 @@ UserRoute.route('/addUser').post((req, res) => {
         .catch(err => res.send(err));
 });
 
-UserRoute.route('/deactivateUser').post(function (req, res) {
+UserRoute.route('/deactivateUser').post((req, res) => {
     Users.updateOne(
         { 'userId': { $eq: req.body.userId } },
         {
@@ -67,19 +130,42 @@ UserRoute.route('/deactivateUser').post(function (req, res) {
 });
 
 UserRoute.route('/getUser').post((req, res) => {
-    Users.findOne({ userId: req.body.userId })
-        .select("-_id -__v")
-        .then(user => res.json(user))
-        .catch(err => res.send(err))
+    if (req.body.isFullDetails) {
+        Users.findOne({ userId: req.body.userId })
+            .select("-_id -__v -cardNumber -cvc -expiration -nameOnCard")
+            .then(user => res.json(user))
+            .catch(err => res.send(err))
+    }
+    else {
+        Users.findOne({ userId: req.body.userId })
+            .select("userId userHandle avatar firstName lastName followers following")
+            .then(user => res.json(user))
+            .catch(err => res.send(err))
+    }
 });
+UserRoute.route('/getFollowDetails').post(async (req, res) => {
+    console.log(req.body)
+    if (req.body.length) {
+        try {
+            const userIds = req.body.map((U) => U.userId);
+            let result = await Users.find({ userId: { $in: userIds } })
+                .lean()
+                .select("-_id userId userHandle avatar firstName lastName")
+                .map(followArr => { return followArr })
+            console.log(JSON.stringify(result))
+            res.json(result)
+        }
+        catch (err) { res.send(err) }
+    }
+});
+
 UserRoute.route('/searchUsers').post((req, res) => {
     Users.find({ userHandle: { $regex: req.body.userHandle, $options: 'i' } })
         .select("-_id userId userHandle avatar firstName lastName followers following")
         .then(user => { res.json({ user }) })
         .catch(err => res.send(err))
 });
-UserRoute.route('/updateUserDetails').post(function (req, res) {
-    console.log(req.body.value)
+UserRoute.route('/updateUserDetails').post((req, res) => {
     Users.updateOne(
         { 'userId': { $eq: req.body.userId } },
         {
@@ -101,71 +187,20 @@ UserRoute.route('/updateUserDetails').post(function (req, res) {
                 cvc: req.body.cc?.cvc,
                 expiration: req.body.cc?.expiration,
             }
-
         },
         { omitUndefined: true },
     ).then(() => {
         res.status(200).json({ 'User': 'User info added successfully' });
-    })
-        .catch(err => res.send(err));
+    }).catch(err => res.send(err));
 });
 
-UserRoute.route('/userInfo').post(function (req, res) {
-    Users.updateOne(
-        { 'userId': { $eq: req.body.userId } },
-        {
-            $set: {
-                address1: req.body.e.address1,
-                address2: req.body.e.address2,
-                cardNumber: req.body.e.cardNumber,
-                city: req.body.e.city,
-                country: req.body.e.country,
-                cvc: req.body.e.cvc,
-                email: req.body.e.email,
-                expiration: req.body.e.expiration,
-                firstName: req.body.e.firstName,
-                lastName: req.body.e.lastName,
-                mobilePhone: req.body.e.mobilePhone,
-                nameOnCard: req.body.e.nameOnCard,
-                state: req.body.e.state,
-                zip: req.body.e.zip,
-
-            }
-        }
-    ).then(() => {
-        res.status(200).json({ 'User': 'User info added successfully' });
-    })
-        .catch(err => res.send(err));
-});
-
-UserRoute.route('/deleteUser').post(function (req, res) {
+UserRoute.route('/deleteUser').post((req, res) => {
     Users.deleteOne({ 'userId': { $eq: req.query.userId } },)
         .then(() => {
             console.log('User deleted');
             res.status(200).json({ 'User': 'User removed' });
         })
         .catch(err => res.send(err));
-});
-
-UserRoute.route('/fetchUserName').get(function (req, res) {
-    Users.find({ email: req.query.email }, { userHandle: 1, email: 1, creator: 1 })
-        .exec(function (err, user) {
-            if (err) {
-                console.error(err);
-                res.json(err);
-            } else {
-                res.send(user);
-            }
-        });
-});
-
-UserRoute.route('/verifyRealName').post((req, res) => {
-    const url = `https://${twilioCredentials.ACCT_SID}:${twilioCredentials.ACCT_TOKEN}@lookups.twilio.com/v1/PhoneNumbers/+${req.body.mobilePhone}?Type=caller-name`;
-    request(url,
-        (error, response, body) => {
-            if (error) res.send(error);
-            res.send(body)
-        });
 });
 
 UserRoute.route('/emailUser').post((req) => {
@@ -178,20 +213,10 @@ UserRoute.route('/emailUser').post((req) => {
     catch (err) { console.log('unable to send email') }
 });
 UserRoute.route('/follow').post((req, res) => {
+    console.log(req.body)
     Users.updateOne(
         { 'userId': req.body.followee.userId },
-        {
-            $push: {
-                followers:
-                {
-                    userId: req.body.follower.userId,
-                    avatar: req.body.follower.avatar,
-                    userHandle: req.body.follower.userHandle,
-                    firstName: req.body.follower.firstName,
-                    lastName: req.body.follower.lastName,
-                }
-            }
-        },
+        { $push: { followers: req.body.follower } },
         { new: true },
         (err, result) => {
             if (err) {
@@ -199,17 +224,7 @@ UserRoute.route('/follow').post((req, res) => {
             }
             Users.updateOne(
                 { 'userId': req.body.follower.userId },
-                {
-                    $push: {
-                        following: {
-                            userId: req.body.followee.userId,
-                            avatar: req.body.followee.avatar,
-                            userHandle: req.body.followee.userHandle,
-                            firstName: req.body.followee.firstName,
-                            lastName: req.body.followee.lastName,
-                        }
-                    }
-                },
+                { $push: { following: req.body.followee } },
                 { new: true }
             )
                 .then(result => {
@@ -221,20 +236,11 @@ UserRoute.route('/follow').post((req, res) => {
         })
 });
 UserRoute.route('/unfollow').post((req, res) => {
+    console.log(req.body)
+
     Users.updateOne(
         { 'userId': req.body.followee.userId },
-        {
-            $pull: {
-                followers:
-                {
-                    userId: req.body.follower.userId,
-                    avatar: req.body.follower.avatar,
-                    userHandle: req.body.follower.userHandle,
-                    firstName: req.body.follower.firstName,
-                    lastName: req.body.follower.lastName,
-                }
-            }
-        },
+        { $pull: { followers: req.body.follower } },
         { new: true },
         (err, result) => {
             if (err) {
@@ -242,17 +248,7 @@ UserRoute.route('/unfollow').post((req, res) => {
             }
             Users.updateOne(
                 { 'userId': req.body.follower.userId },
-                {
-                    $pull: {
-                        following: {
-                            userId: req.body.followee.userId,
-                            avatar: req.body.followee.avatar,
-                            userHandle: req.body.followee.userHandle,
-                            firstName: req.body.followee.firstName,
-                            lastName: req.body.followee.lastName,
-                        }
-                    }
-                },
+                { $pull: { following: req.body.followee } },
                 { new: true }
             )
                 .then(result => {
