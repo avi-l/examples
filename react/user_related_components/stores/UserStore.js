@@ -15,24 +15,8 @@ class UserStore {
             mobilePhone: String,
             avatar: String,
             active: Boolean,
-            followers:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ],
-            following:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ],
+            followers:[],
+            following:[],
             address: {
                 address1: String,
                 address2: String,
@@ -55,24 +39,8 @@ class UserStore {
             mobilePhone: String,
             avatar: String,
             active: Boolean,
-            followers:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ],
-            following:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ],
+            followers:[],
+            following:[],
             address: {
                 address1: String,
                 address2: String,
@@ -92,25 +60,12 @@ class UserStore {
             email: String,
             avatar: String,
             active: Boolean,
-            followers:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ],
-            following:[
-                {
-                    userId: String,
-                    avatar: String,
-                    userHandle: String,
-                    firstName: String,
-                    lastName: String,
-                }
-            ]
+            followers:[],
+            following:[]
         };
+    
+        @observable
+        userObject = {};
     
         @action
         setUser = obj => {
@@ -124,6 +79,12 @@ class UserStore {
         setCardUser = obj => {
             this.cardUser = obj;
         };
+    
+        @action
+        setUserObject = obj => {
+            this.userObject = obj;
+        };
+
 }
 
 const userStore = new UserStore();

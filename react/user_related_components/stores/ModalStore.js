@@ -1,8 +1,6 @@
-import {observable, action} from 'mobx';
+import { observable, action } from 'mobx';
 
 class ModalStore {
-
-   
 
     @observable
     showUploadPicModal = false;
@@ -14,25 +12,28 @@ class ModalStore {
     showFollowersModal = {
         show: false,
         user: '',
+        loggedInUserId: '',
         showType: '',
     };
 
     @observable
     showErrorPopup = {
-        show: false, 
-        message: '', 
-        tryAgain: false, 
-        signOut: false, 
-        isLoggedIn: false, 
+        show: false,
+        message: '',
+        tryAgain: false,
+        signOut: false,
+        isLoggedIn: false,
         makeContributor: false,
         goHomeAsContributor: false
     };
+
     @observable
     showConfirmCancelPopup = {
-        show: false, 
-        message: '', 
+        show: false,
+        message: '',
         action: '',
     };
+
 
     @action
     setShowErrorPopup = pop => {
@@ -50,16 +51,10 @@ class ModalStore {
     setShowFollowersModal = obj => {
         this.showFollowersModal = obj;
     }
-
     @action
     setShowConfirmCancelPopup = pop => {
         this.showConfirmCancelPopup = pop;
     }
-
-    @action
-    setShowVerifyModal = bool => {
-        this.showVerifyModal = bool;
-    };
 
 }
 
