@@ -6,7 +6,7 @@ import { observer } from "mobx-react";
 import { forceReload } from "../../../utilities/forceReload";
 import storeContext from "../../../stores/storeContext";
 import { checkEmailExists, checkInvite } from "../user_api";
-import { signUp } from "../userManagement";
+import { cognitoEmailUsed, signUp } from "../userManagement";
 import PasswordChecklist from "react-password-checklist"
 
 const SignUpForm = observer(() => {
@@ -42,7 +42,15 @@ const SignUpForm = observer(() => {
                 .catch(() => {
                     return false;
                 })
-    }
+            || await cognitoEmailUsed(email)
+                .then((res) => {
+                    console.log(res)
+                    return res;
+                })
+                .catch(() => {
+                    return false;
+                })
+    } 
 
     const submitUserSignUp = async (event) => {
         event.preventDefault();
@@ -53,7 +61,7 @@ const SignUpForm = observer(() => {
             setIsLoading(false);
         }
         else {
-            const isEmailUsed = await checkEmailInUse()
+            let isEmailUsed = await checkEmailInUse()
             setShowErrorPopup({ show: isEmailUsed, message: MESSAGES.emailTaken, tryAgain: true });
             setIsLoading(false);
 
@@ -96,11 +104,9 @@ const SignUpForm = observer(() => {
     }
 
     return (
-        <Form className="form-signin" onSubmit={submitUserSignUp}>
-            <h3 className="form-signin">
-                Please sign up below to create an account with us:
-            </h3>
-            <Form.Group className="input-group">
+        <Form className="login-form-signin" onSubmit={submitUserSignUp}>
+            <Form.Group className="login-input-group">
+            <Form.Label>Username</Form.Label>
                 <Form.Control
                     type="username"
                     id="inputEmail"
@@ -113,7 +119,8 @@ const SignUpForm = observer(() => {
                     autoFocus
                 />
             </Form.Group>
-            <Form.Group className="input-group">
+            <Form.Group className="login-input-group">
+            <Form.Label>Email address</Form.Label>
                 <Form.Control
                     type="email"
                     id="email"
@@ -125,7 +132,8 @@ const SignUpForm = observer(() => {
                     required
                 />
             </Form.Group>
-            <Form.Group className="input-group">
+            <Form.Group className="login-input-group">
+            <Form.Label>Password</Form.Label>
                 <Form.Control
                     type="password"
                     id="inputPassword"
@@ -137,7 +145,8 @@ const SignUpForm = observer(() => {
                     required
                 />
             </Form.Group>
-            <Form.Group className="input-group" >
+            <Form.Group className="login-input-group" >
+            <Form.Label>Re-enter Password</Form.Label>
                 <Form.Control
                     type="password"
                     id="passwordCopy"
@@ -150,43 +159,35 @@ const SignUpForm = observer(() => {
                 />
             </Form.Group>
             {password !== '' &&
-                <Form.Group className="password-validator">
+                <Form.Group className="login-password-validator">
                     <PasswordChecklist
                         rules={["length", "specialChar", "number", "capital", "match"]}
                         minLength={8}
                         value={password}
                         valueAgain={passwordCopy}
+                    // onChange={(isValid) => {}}
                     />
                 </Form.Group>}
-            <Form.Group className="input-group">
+            <Form.Group className="login-input-group">
                 {!isLoading &&
                     <Button
-                        className="btn form-control submit"
+                        className="btn login-btn form-control submit"
                         type="submit"
+                    // disabled={!validateUserDetails()}
                     >
-                        <i className="fas fa-user-plus" /> Sign Up!
-                </Button>}
+                        <i className="fas fa-user-plus" /> Create Account!
+                    </Button>}
             </Form.Group>
             <Form.Group>
-                {!isLoading &&
-                    <Button
-                        className="btn form-control submit"
-                        type="button"
-                        id="btn-signup"
-                        onClick={() => forceReload("/signIn")}
-                    >
-                        <i className="fas fa-sign-in-alt fa-flip-horizontal" /> Back to Sign
-                In
-                </Button>
-                }
+
                 {isLoading &&
                     <Button
-                        className="btn form-control submit"
+                        className="btn login-btn form-control submit"
                         type="button"
                         id="btn-signup"
                     >
                         Signing Up... &nbsp;
-                <i className="fas fa-spinner fa-pulse"></i>
+                        <i className="fas fa-spinner fa-pulse"></i>
                     </Button>
                 }
             </Form.Group>
