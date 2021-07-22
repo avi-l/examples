@@ -219,7 +219,6 @@ const UserCheck = (() => {
                 <Form.Group as={Row} className="input-group">
                     <Form.Row className="align-items-center">
                         <Col>
-                            <Form.Text><h1>Welcome to LampLighter!</h1></Form.Text>
                             <Form.Text><h5>Please edit and save your details</h5></Form.Text>
                             <Form.Text><p>You can update these later in your profile page</p></Form.Text>
                         </Col>
