@@ -232,7 +232,10 @@ const UserCheck = (() => {
                 <Form.Group as={Row} className='input-group'>
                     <Form.Row className='align-items-center'>
                         <Col>
+<<<<<<< HEAD
                             <Form.Text><h1>Welcome!</h1></Form.Text>
+=======
+>>>>>>> a244e79571432984bcc4b238089b763c72bfdcf4
                             <Form.Text><h5>Please edit and save your details</h5></Form.Text>
                             <Form.Text><p>You can update these later in your profile page</p></Form.Text>
                         </Col>
