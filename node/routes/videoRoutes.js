@@ -1,44 +1,49 @@
 const express = require('express');
 const VideosRoute = express.Router();
 const Videos = require('../models/VideoModel');
-const vimeoCredentials = require('../vimeoCredentials');
-
+const Commercials = require('../models/CommercialModel');
+const {sendMail} = require('../shared/mailer');
+const request = require('request');
+const {pollDb} = require("./getVimeoMetadata");
+const {ObjectId} = require("mongoose/lib/types");
+const vimeoCredentials = process.env.VIMEO_ACCESS_TOKEN;
 VideosRoute.route('/getVimeoUploadURL').post((req, res) => {
     const data = req.body.data
-    const request = require('request');
     const options = {
         url: 'https://api.vimeo.com/me/videos',
         method: 'POST',
         headers: {
             'Accept': 'application/vnd.vimeo.*+json;version=3.4',
             'Content-Type': 'application/json',
-            'Authorization': 'bearer ' + vimeoCredentials.ACCESS_TOKEN
+            'Authorization': 'bearer ' + vimeoCredentials
         },
         body: JSON.stringify(data)
     }
-    request.post(options, (err, response, body) => {
+    request(options, (err, response, body) => {
         if (err) {
             return console.log(err);
         }
         res.send(body)
     });
 });
-VideosRoute.route('/deleteVimeoVid').post((req, res) => {
-    const {uri} = req.body;
-    const request = require('request');
-    const url = `https://api.vimeo.com/videos/${uri}`
 
-    request.delete(url, {
+VideosRoute.route('/getVimeoThumbURL').post((req, res) => {
+    const options = {
+        url: `https://api.vimeo.com/videos/${req.body._id}`,
+        method: 'GET',
         headers: {
-            'Authorization': 'bearer ' + vimeoCredentials.ACCESS_TOKEN
-        }
-    }, (err, response, body) => {
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+            'Authorization': 'bearer ' + vimeoCredentials
+        },
+    }
+    request(options, (err, resp, body) => {
         if (err) {
             return console.log(err);
         }
-        res.send(body)
+        res.status(200).send(body)
     });
 });
 
 
-    module.exports = VideosRoute;
+module.exports = VideosRoute;

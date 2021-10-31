@@ -1,369 +1,284 @@
 
-/* COlOR Palette
-Asphalt #100B05
-Brandy Punch #D79431
-Bull Shot #844C1C
-Pickled Bean #6C3024
+.login-body{
 
-Cape Cod
-#3D4849
+}
+.login-card {
+    margin-top: 50px;
+    border-radius: 10px;
+    padding: 20px;
+    width: 21rem;
+    text-align: left;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    
+    /* box-shadow: 5px 10px 5px rgba(128, 128, 128, 0.644); */
+}
+.login-card-header {
+    width:16rem;
+    background-color: inherit;
+    
+    
+}
+.login-nav-tabs .login-nav-tabs.active {
+    /* background-color: #50595c48; */
+}
+.login-card-title {
+    color: #007bff;
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+    
+}
+.login-form-signin {
+    /* padding: 10px; */
+    
+}
+.login-btn {
+    /* width: auto; */
+}
+.login-form-social-buttons {
+    width: 6rem;
+    margin: 0 auto;
 
-Gold Sand
-#E7BB90
+}
+.login-social-button {
 
-Lemon Grass
-#9B9C93
+    text-align: auto;
 
-Manatee
-#9A9CA4
-*/
+    border-radius: 50%;
+    text-decoration: none;
+    margin: 2px 2px;
+    cursor: pointer;
+
+}
+.fab {
+    /* padding: 20px; */
+    font-size: 25px;
+    width: 2.5rem;
+    height: 2.5rem;
+    text-align: center;
+    text-decoration: none;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-left:  .5rem;
+    padding-right:  .5rem;
+    
+}
   
-#logreg-forms h3 {
-    color: #9B9C93
+  /* Add a hover effect if you want */
+.fab:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook-f {  
+    background: #3b5898;
+    color: white;
+    
+    
+  }
+
+  .fa-google {
+    background: #dd4b39;
+    color: white;
+  }
+
+
+.login-card-body {
+
+}
+
+.login-card-btn {
+    margin-top: .5vh;
+    padding: .175rem .65rem;
+    float: right;
  }
 
-#logreg-login {
-    background: #9B9C93;
-}
- #logreg-body{
-  height: 100vh;
-  /* background-image: url(../../img/matches.jpg); */
-  background-image: url(../../img/lightbulb02.jpg);
-  background-size:cover;
-  background-repeat: no-repeat;
- }
-
-#logreg-forms{
-
-    border-radius: 10px;
-    width: 412px;
-    margin:  auto ;
-    background: #3D4849;
-    /* box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.24); */
-    transition: all 3s cubic-bezier(.25,.8,.25,1);
-}
-
-#logreg-forms form {
-    border-radius: 10px;
-    /* background: #3D4849; */
-    width: 100%;
-    height: 70%;
-    max-width: 410px;
-    padding: 15px;
-    margin: auto;
-    font-size: 15px;
-    color: #E7BB90;
-    /* box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.24); */
-    transition: all 3s cubic-bezier(.25,.8,.25,1);
-}
-#logreg-forms .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-}
-#logreg-forms .form-passreset{
-    height: 70%;
-} 
-#logreg-forms .form-control:focus { z-index: 2; }
-#logreg-forms .form-signin input[type="email"] {
-    background-color: #3D4849;
-    border-color: #9B9C93;
-    color: #9B9C93;
-    margin-bottom: -1px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-#logreg-forms .form-signin input[type="password"], input[id="signUpConfirmPassword"] {
-    background-color: #3D4849;
-    border-color: #9B9C93;
-    color: #9B9C93;
-    margin-bottom: -1px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 10;
-    border-bottom-left-radius: 10;
-}
-#logreg-forms .form-signin input[type="username"] {
-    background-color: #3D4849;
-    border-color: #9B9C93;
-    color: #9B9C93;
-    margin-bottom: -1px;
-    border-top-left-radius: 10;
-    border-top-right-radius: 10;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-#logreg-forms .form-signin input[type="phoneNumber"],input[id="newPassword"],input[id="signUpPassword"] 
-    {
-    background-color: #3D4849;
-    border-color: #9B9C93;
-    color: #9B9C93;
-    margin-bottom: -1px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-#logreg-forms .form-signin input[type="code"] {
-    background-color: #3D4849;
-    border-color: #9B9C93;
-    color: #9B9C93;
-    margin-bottom: -1px;
-    border-top-left-radius: 10;
-    border-top-right-radius: 10;
-    border-bottom-right-radius: 10;
-    border-bottom-left-radius: 10;
-}
-/* SOCIAL LOGIN MAGIC */
-/* @charset "UTF-8"; */
-
-#logreg-forms .rounded-social-buttons {
-  text-align: center;
-}
-
-#logreg-forms .rounded-social-buttons .social-button {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  width: 3.125rem;
-  height: 3.125rem;
-  border: 0.125rem solid transparent;
-  padding: 0;
-  text-decoration: none;
-  text-align: center;
-  color: #fefefe;
-  font-size: 1.5625rem;
-  font-weight: normal;
-  line-height: 1em;
-  border-radius: 1.6875rem;
-  transition: all 0.5s ease;
-  margin-top: 0.05rem;
-  margin-right: 0.3rem;
-  margin-left: 0.3rem;
-  margin-bottom: 0.25rem;
-  border-width: 1px;
-  border-color: #9B9C93;
-}
-
-#logreg-forms .rounded-social-buttons .social-button:hover, .rounded-social-buttons .social-button:focus {
-  -webkit-transform: rotate(360deg);
-      -ms-transform: rotate(360deg);
-          transform: rotate(360deg);
-}
-
-#logreg-forms .rounded-social-buttons .social-button.facebook {
-  background: #3b5898ab;
-
-  
-}
-
-#logreg-forms .rounded-social-buttons .social-button.facebook:hover, .rounded-social-buttons .social-button.facebook:focus {
-  color: #3b5998;
-  background: #fefefe;
-  border-color: #3b5998;
-}
-
-#logreg-forms .rounded-social-buttons .social-button.google-plus {
-  background: #dd4c39bb;
-  
-}
-
-#logreg-forms .rounded-social-buttons .social-button.google-plus:hover, .rounded-social-buttons .social-button.google-plus:focus {
-  color: #dd4b39;
-  background: #fefefe;
-  border-color: #dd4b39;
-}
 
 
 
 
 
 
-/* #logreg-forms .social-login{
-    width:390px;
-    margin:0 auto;
-    margin-top: 5px;
-    margin-bottom: 14px;
-} */
-/* #logreg-forms .social-btn{
-    font-weight: 100;
-    color:white;
-    width: 64px;
-    height: 64px;
-    font-size: 0.9rem;
-    
-} */
+/*!* #logreg-forms .social-login{*/
+/*    width:390px;*/
+/*    margin:0 auto;*/
+/*    margin-top: 5px;*/
+/*    margin-bottom: 14px;*/
+/*} *!*/
+/*!* #logreg-forms .social-btn{*/
+/*    font-weight: 100;*/
+/*    color:white;*/
+/*    width: 64px;*/
+/*    height: 64px;*/
+/*    font-size: 0.9rem;*/
+/*    */
+/*} *!*/
 
-#logreg-forms a{
-    display: block;
-    padding-top:10px;
-    color:#9B9C93;
-}
+/*#logreg-forms a{*/
+/*    display: block;*/
+/*    padding-top:10px;*/
+/*    color:#9B9C93;*/
+/*}*/
 
-#logreg-form .lines{
-    width:200px;
-    border:1px solid red;
-}
+/*#logreg-form .lines{*/
+/*    width:200px;*/
+/*    border:1px solid red;*/
+/*}*/
 
-#logreg-forms button { 
-    margin-top:10px; 
-    color: #9B9C93;
-    border-color: #9B9C93;
-}
-#logreg-forms button:disabled{ 
-    background-color: #3D4849;
-    color:#291b07;
-    margin-top:10px; 
-    border-color: #9B9C93;
-}
+/*#logreg-forms button { */
+/*    margin-top:10px; */
+/*    color: #9B9C93;*/
+/*    border-color: #9B9C93;*/
+/*}*/
+/*#logreg-forms button:disabled{ */
+/*    background-color: #3D4849;*/
+/*    color:#291b07;*/
+/*    margin-top:10px; */
+/*    border-color: #9B9C93;*/
+/*}*/
 
-#logreg-forms button:hover {
-    background: #9B9C93;
-    border-radius: 25px;
-    color: #3D4849;
-}
-
-
-/* #logreg-forms .facebook-btn{  
-    background-color:#3c579ce8;     
-    border-radius: 25px;
-    border-color: #f;
-    color: #fff;}
-
-#logreg-forms .google-btn{ 
-    background-color: #df4c3bd5;     
-    border-radius: 25px;
-    border-color: #fff;
-    color: #fff; } */
-
-#logreg-forms .form-reset, #logreg-forms .form-signup{ display: none; }
-
-#logreg-forms .form-signup .social-btn{ 
-    width:105px; 
-    border-radius: 25px;
-    border-color: #fff;
-}
-
-#logreg-forms .form-signup input { margin-bottom: 2px;}
-
-.form-signup .social-login{
-    width:105px !important;
-    margin:0 auto;
-    border-color: #fff;
-    
-}
-
-.submit{
-  /* background: -webkit-linear-gradient(0deg,  #3c579c80 0%, #238aff7a 100%); */
-  background-color: #3D4849;
-  border-radius: 25px;
-  color: #9B9C93;
-}
-
-.signup{
-    background: #3D4849;
-    border-radius: 25px;
-    color: #9B9C93;
-}
-.btn-signup, .btn-stay-guest{
-    background: #3D4849;
-    border-radius: 25px;
-    color: #9B9C93;
-    display:inline-block;
-}
+/*#logreg-forms button:hover {*/
+/*    background: #9B9C93;*/
+/*    border-radius: 25px;*/
+/*    color: #3D4849;*/
+/*}*/
 
 
-.must-container{
-    margin-bottom: .5sem;
-    border: 0.01em solid #9B9C93;
-}
+/*!* #logreg-forms .facebook-btn{  */
+/*    background-color:#3c579ce8;     */
+/*    border-radius: 25px;*/
+/*    border-color: #f;*/
+/*    color: #fff;}*/
 
-.must-item{
-    position: relative;
-    width: 100%;
-    height: 25px;
-    border-bottom: 0.01em solid #9B9C93;
-}
+/*#logreg-forms .google-btn{ */
+/*    background-color: #df4c3bd5;     */
+/*    border-radius: 25px;*/
+/*    border-color: #fff;*/
+/*    color: #fff; } *!*/
 
-.must-text{
-    position: absolute;
-    z-index: 0;
-    top: 0.6em;
-    left: 1em;
-    width: 100%;
-    font-style: inherit;
-    font-size: inherit;
-    padding: 100;
-    margin: 0;
-    line-height: 0.5;
-}
+/*#logreg-forms .form-reset, #logreg-forms .form-signup{ display: none; }*/
 
-.must-line{
-    position: right;
-    width: 0;
-    height: 100%;
-    background: -webkit-linear-gradient(0deg,  #3D4849 0%, #9B9C93 100%);     
-    transition: 0.5s;  
-}
+/*#logreg-forms .form-signup .social-btn{ */
+/*    width:105px; */
+/*    border-radius: 25px;*/
+/*    border-color: #fff;*/
+/*}*/
 
-.cross-out{
-    width: 100%;
-}
+/*#logreg-forms .form-signup input { margin-bottom: 2px;}*/
 
-/* Mobile */
+/*.form-signup .social-login{*/
+/*    width:105px !important;*/
+/*    margin:0 auto;*/
+/*    border-color: #fff;*/
+/*    */
+/*}*/
 
-@media screen and (max-width:500px){
-    #logreg-body{
-        visibility: hidden;
-        clear: both;
-        float: left;
-        margin: 10px auto 5px 20px;
-        width: 28%;
-        display: none;
-    }
-    .hide-mobile, .must-container, .must-requirements {
-        visibility: hidden;
-        display: none;  
-    }
-    
-    #logreg-forms{
-        width:300px;
-        background-image: url(../../img/lightbulb02.jpg);
-        background-size: cover;
-        position: center;
-       
-    }
+/*.submit{*/
+/*  !* background: -webkit-linear-gradient(0deg,  #3c579c80 0%, #238aff7a 100%); *!*/
+/*  background-color: #3D4849;*/
+/*  border-radius: 25px;*/
+/*  color: #9B9C93;*/
+/*}*/
 
-    #logreg-forms  .social-login{
-        width:200px;
-        margin:0 auto;
-        margin-bottom: 10px;
-    }
-    #logreg-forms  .social-btn{
-        font-size: 1.3rem;
-        font-weight: 100;
-        color:white;
-        width:200px;
-        height: 56px;
+/*.signup{*/
+/*    background: #3D4849;*/
+/*    border-radius: 25px;*/
+/*    color: #9B9C93;*/
+/*}*/
+/*.btn-signup, .btn-stay-guest{*/
+/*    background: #3D4849;*/
+/*    border-radius: 25px;*/
+/*    color: #9B9C93;*/
+/*    display:inline-block;*/
+/*}*/
 
-    }
-    #logreg-forms .social-btn:nth-child(1){
-        margin-bottom: 5px;
-    }
-    #logreg-forms .social-btn span{
-        display: none;
-    }
-    #logreg-forms  .facebook-btn:after{
-        content:'Facebook';
-    }
 
-    #logreg-forms  .google-btn:after{
-        content:'Google+';
-    }
+/*.must-container{*/
+/*    margin-bottom: .5sem;*/
+/*    border: 0.01em solid #9B9C93;*/
+/*}*/
 
-}
+/*.must-item{*/
+/*    position: relative;*/
+/*    width: 100%;*/
+/*    height: 25px;*/
+/*    border-bottom: 0.01em solid #9B9C93;*/
+/*}*/
+
+/*.must-text{*/
+/*    position: absolute;*/
+/*    z-index: 0;*/
+/*    top: 0.6em;*/
+/*    left: 1em;*/
+/*    width: 100%;*/
+/*    font-style: inherit;*/
+/*    font-size: inherit;*/
+/*    padding: 100;*/
+/*    margin: 0;*/
+/*    line-height: 0.5;*/
+/*}*/
+
+/*.must-line{*/
+/*    position: right;*/
+/*    width: 0;*/
+/*    height: 100%;*/
+/*    background: -webkit-linear-gradient(0deg,  #3D4849 0%, #9B9C93 100%);     */
+/*    transition: 0.5s;  */
+/*}*/
+
+/*.cross-out{*/
+/*    width: 100%;*/
+/*}*/
+
+/*!* Mobile *!*/
+
+/*@media screen and (max-width:500px){*/
+/*    #logreg-body{*/
+/*        visibility: hidden;*/
+/*        clear: both;*/
+/*        float: left;*/
+/*        margin: 10px auto 5px 20px;*/
+/*        width: 28%;*/
+/*        display: none;*/
+/*    }*/
+/*    .hide-mobile, .must-container, .must-requirements {*/
+/*        visibility: hidden;*/
+/*        display: none;  */
+/*    }*/
+/*    */
+/*    #logreg-forms{*/
+/*        width:300px;*/
+/*        background-image: url(../../img/lightbulb02.jpg);*/
+/*        background-size: cover;*/
+/*        position: center;*/
+/*       */
+/*    }*/
+
+/*    #logreg-forms  .social-login{*/
+/*        width:200px;*/
+/*        margin:0 auto;*/
+/*        margin-bottom: 10px;*/
+/*    }*/
+/*    #logreg-forms  .social-btn{*/
+/*        font-size: 1.3rem;*/
+/*        font-weight: 100;*/
+/*        color:white;*/
+/*        width:200px;*/
+/*        height: 56px;*/
+
+/*    }*/
+/*    #logreg-forms .social-btn:nth-child(1){*/
+/*        margin-bottom: 5px;*/
+/*    }*/
+/*    #logreg-forms .social-btn span{*/
+/*        display: none;*/
+/*    }*/
+/*    #logreg-forms  .facebook-btn:after{*/
+/*        content:'Facebook';*/
+/*    }*/
+
+/*    #logreg-forms  .google-btn:after{*/
+/*        content:'Google+';*/
+/*    }*/
+
+/*}*/

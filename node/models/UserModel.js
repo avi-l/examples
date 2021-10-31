@@ -26,24 +26,9 @@ const UserSchema = new Schema({
     active: Boolean,
     deprecated: Boolean,
     documentId: String,
-    followers:[
-        {
-            userId: String,
-            avatar: String,
-            userHandle: String,
-            firstName: String,
-            lastName: String,
-        }
-    ],
-    following:[
-        {
-            userId: String,
-            avatar: String,
-            userHandle: String,
-            firstName: String,
-            lastName: String,
-        }
-    ]
+    followers: [],
+    following: [],
+    unreadMsgsUserIds: []
 });
 
 module.exports = mongoose.model('Users', UserSchema);

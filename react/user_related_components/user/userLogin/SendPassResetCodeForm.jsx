@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
-import { sendResetCode } from "../userManagement";
-import storeContext from "../../../stores/storeContext";
-import { observer } from "mobx-react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import React, { useContext, useState } from 'react';
+import { sendResetCode } from '../userManagement';
+import storeContext from '../../../stores/storeContext';
+import { observer } from 'mobx-react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 const SendPassResetCodeForm = observer(() => {
     const [isLoading, setIsLoading] = useState(false);
@@ -14,10 +14,10 @@ const SendPassResetCodeForm = observer(() => {
     } = loginStore;
     const { setShowErrorPopup } = modalStore;
 
-    const sendResetCodeToUser = async (event) => {
+    const sendResetCodeToUser = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        await sendResetCode(username)
+        sendResetCode(username)
             .then((res) => {
                 setIsLoading(false);
                 if (!!res.CodeDeliveryDetails?.Destination) {
@@ -41,17 +41,17 @@ const SendPassResetCodeForm = observer(() => {
     }
 
     return (
-        <Form className="form-signin" onSubmit={sendResetCodeToUser}>
+        <Form className='form-signin' onSubmit={sendResetCodeToUser}>
             <Form.Label>
                 Forgot Password? Enter your username and we will send a password reset
                 code to your email
             </Form.Label>
-            <Form.Group className="input-group">
+            <Form.Group className='input-group'>
                 <Form.Control
-                    type="code"
-                    id="inputUsername"
-                    className="form-control"
-                    placeholder="Username"
+                    type='code'
+                    id='inputUsername'
+                    className='form-control'
+                    placeholder='Username'
                     value={username}
                     onChange={(e) =>
                         setUsername(e.target.value)}
@@ -59,14 +59,14 @@ const SendPassResetCodeForm = observer(() => {
                     autoFocus
                 />
             </Form.Group>
-            <Form.Group className="input-group">
+            <Form.Group className='input-group'>
                 {!isLoading &&
                     <Button
-                        className="btn form-control submit"
-                        type="submit"
+                        className='btn form-control submit'
+                        type='submit'
                         disabled={!username}
                     >
-                        <i className="far fa-paper-plane" />
+                        <i className='far fa-paper-plane' />
                              {'  '} Send Reset Code
                             </Button>
                 }
@@ -74,12 +74,12 @@ const SendPassResetCodeForm = observer(() => {
             <Form.Group>
                 {isLoading &&
                     <Button
-                        className="btn form-control submit"
-                        type="button"
-                        id="btn-signup"
+                        className='btn form-control submit'
+                        type='button'
+                        id='btn-signup'
                     >
                         Submitting... &nbsp;
-                <i className="fas fa-spinner fa-pulse"></i>
+                <i className='fas fa-spinner fa-pulse'></i>
                     </Button>
                 }
             </Form.Group>

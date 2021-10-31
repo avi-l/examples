@@ -27,7 +27,7 @@ Resources:
       EmailConfiguration:
         # EmailSendingAccount: DEVELOPER
         # From: "No Reply <no-reply@FILL_IN_THE_BLANK_DOMAIN.COM>"
-        SourceArn: "arn:aws:ses:us-east-1:467308492981:identity/no-reply@FILL_IN_THE_BLANK_DOMAIN.COM"
+        SourceArn: "arn:aws:ses:us-east-1:FILL_IN_THE_BLANK:identity/no-reply@FILL_IN_THE_BLANK_DOMAIN.COM"
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_CODE
       DeviceConfiguration:

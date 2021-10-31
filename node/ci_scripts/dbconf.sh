@@ -1,33 +1,27 @@
 #!/bin/bash
 
-echo "module.exports = {
-  remoteDB: 'mongodb+srv://$DB_CONNECT_STRING?retryWrites=true&w=majority',
-  remoteUser: '$DB_USER',
-  remotePass: '$DB_PASSWD',
-};" > DbCredentials.js
+echo "
 
-echo "module.exports = {
-    ACCT_SID: '$TWILIO_SID',
-    ACCT_TOKEN: '$TWILIO_AUTH_TOKEN'
-}" > twilioCredentials.js
+CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUDNAME
+CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET
 
-echo "module.exports = {
-    pass: '$MAILER_PASS',
-};" > mailerCredentials.js
+DB_CONNECT_STRING=mongodb+srv://$DB_USER:$DB_PASSWD@$DB_CONNECT_STRING?retryWrites=true&w=majority
+PORT=4000
 
-echo "module.exports = {
-    CLOUDKARAFKA_TOPIC_PREFIX: 'xxxxxx-',
-    CLOUDKARAFKA_BROKERS: 'xxxxxxxxxx.cloudkafka.com:9094,xxxxxxxxx.cloudkafka.com:9094,xxxxxxxxxx.cloudkafka.com:9094',
-    CLOUDKARAFKA_USERNAME: '$DEV_KARAFKA_USERNAME',
-    CLOUDKARAFKA_PASSWORD: '$DEV_KARAFKA_PASSWORD',
-};" > kafkaCredentials.js
+FE_SOCKET_CORS=ws://localhost:3010
 
-echo "module.exports = {
-    cloud_name: '$CLOUDINARY_CLOUDNAME',
-    api_key: '$CLOUDINARY_API_KEY',
-    api_secret: '$CLOUDINARY_API_SECRET'
-};" > cloudinaryCredentials.js
+CLOUDKARAFKA_TOPIC_PREFIX=$DEV_TOPIC_PREFIX
+CLOUDKARAFKA_BROKERS=$DEV_KARAFKA_BROKERS
+CLOUDKARAFKA_USERNAME=$DEV_KARAFKA_USERNAME
+CLOUDKARAFKA_PASSWORD=$DEV_KARAFKA_PASSWORD
 
-echo "module.exports = {
-   ACCESS_TOKEN: '$VIMEO_ACCESS_TOKEN'
-};" > vimeoCredentials.js
+MAILER_PASS=$MAILER_PASS
+
+TINYMCEKEY=$TINY_MCE_KEY
+
+TWILIO_ACCT_SID=$TWILIO_SID
+TWILIO_ACCT_TOKEN=$TWILIO_AUTH_TOKEN
+
+VIMEO_ACCESS_TOKEN=$VIMEO_ACCESS_TOKEN
+" > .env

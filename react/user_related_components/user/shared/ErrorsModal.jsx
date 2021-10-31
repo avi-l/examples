@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Button from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button';
 import { forceReload } from '../../../utilities/forceReload';
 import storeContext from '../../../stores/storeContext';
 import { observer } from 'mobx-react';
@@ -17,7 +17,7 @@ const ErrorsModal = observer(() => {
         setShowErrorPopup(
             {
                 show: false,
-                message: "",
+                message: '',
                 tryAgain: false,
                 signOut: false
             });
@@ -36,7 +36,7 @@ const ErrorsModal = observer(() => {
         setShowErrorPopup(
             {
                 show: false,
-                message: "",
+                message: '',
                 tryAgain: false,
                 signOut: false,
                 makeContributor: true
@@ -70,7 +70,7 @@ const ErrorsModal = observer(() => {
             >
                 <Modal.Header>
                     <Modal.Title> <i className={'far fa-lightbulb'} />
-                    &nbsp; FILL_IN_THE_BLANK
+                    &nbsp; example.com
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -81,68 +81,54 @@ const ErrorsModal = observer(() => {
                         !showErrorPopup.isLoggedIn &&
                         !showErrorPopup.goHomeAsContributor &&
                         !isLoading &&
-                        <Button variant="secondary"
+                        <Button variant='primary'
                             onClick={goHome}
                         >
-                            <i className="fas fa-home" /> Home
+                            <i className='fas fa-home' /> Home
                     </Button>}
                     {showErrorPopup.tryAgain &&
                         !showErrorPopup.isLoggedIn &&
                         !isLoading &&
-                        <Button
-                            type='button'
-                            className='btn btn-secondary'
+                        <Button variant='secondary'
                             onClick={remain}
                         >
-                            <i className="fas fa-redo" /> Try Again
+                            <i className='fas fa-redo' /> Try Again
                 </Button>}
                     {showErrorPopup.signOut &&
                         !isLoading &&
-                        <Button
-                            type='button'
-                            className='btn btn-secondary'
+                        <Button variant='secondary'
                             onClick={logOut}
                         >
-                            <i className="fas fa-sign-out" /> Sign Out
+                            <i className='fas fa-sign-out' /> Sign Out
                 </Button>}
                     {showErrorPopup.isLoggedIn &&
                         !isLoading &&
-                        <Button
-                            type='button'
-                            className='btn btn-secondary'
+                        <Button variant='primary'
                             onClick={upgradeToContributor}
                         >
-                            <i className="fas fa-user-plus" /> Yes, make me a Contributor!
+                            <i className='fas fa-user-plus' /> Yes, make me a Contributor!
                 </Button>}
                     {showErrorPopup.isLoggedIn &&
                         !isLoading &&
-                        <Button
-                            type='button'
-                            className='btn btn-secondary'
+                        <Button variant='secondary'
                             onClick={goHome}
                         >
-                            <i className="fas fa-home" /> Not now
+                            <i className='fas fa-home' /> Not now
                 </Button>
                     }
                     {showErrorPopup.goHomeAsContributor &&
 
-                        <Button
-                            type='button'
-                            className='btn btn-secondary'
+                        <Button variant='primary'
                             onClick={continueAsContributor}
                         >
-                            <i className="fas fa-home" /> Continue to FILL_IN_THE_BLANK
+                            <i className='fas fa-home' /> Continue to example.com
                 </Button>
                     }
                     {!showErrorPopup.goHomeAsContributor &&
                         isLoading &&
-                        <Button
-                            className="btn form-control submit"
-                            type="button"
-                            id="btn-signup"
-                        >
+                        <Button variant='secondary'>
                             Loading... &nbsp;
-                <i className="fas fa-spinner fa-pulse"></i>
+                <i className='fas fa-spinner fa-pulse'></i>
                         </Button>
                     }
                 </Modal.Footer>

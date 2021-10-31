@@ -1,0 +1,54 @@
+.search-users-avatar {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   object-fit: cover;
+   margin-right: 20px;
+}
+.search-users-list-group {
+   /* height: auto;
+   overflow: hidden auto;
+   overflow-x: hidden;
+
+   margin-bottom: 10px; */
+   overflow: hidden auto;
+   overflow-x: hidden;
+   padding-left: 10%;
+   padding-right: 10%;
+   display: flex;
+   align-items: left;
+   padding: 10px;
+   /* cursor: pointer; */
+   margin-top: 20px;
+   overflow-y: scroll;
+   height: 90%;
+}
+.search-users-list-item {
+   height: 60px;
+   /* padding: 10px 15px; */
+   border: none;
+  cursor: pointer;
+  
+}
+.search-users-follow-btn {
+   margin-top: .5vh;
+   padding: .175rem .65rem;
+   float: right;
+   text-transform: unset !important;
+ 
+}
+.search-scrollable { 
+   overflow-y: auto;
+   max-height: 200px;
+}
+.search-input-group {
+   height: auto;
+   position: relative;
+   padding-left: 10%;
+   padding-right: 10%;
+}
+.search-form-control {
+   margin-top: 8%;
+   margin-bottom: 5%;
+   border-radius: 25px;
+}

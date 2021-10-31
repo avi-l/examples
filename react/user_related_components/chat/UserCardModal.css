@@ -1,0 +1,8 @@
+.userCardModal{
+   max-width: 18.5rem !important;
+   margin-left: 38%;
+}
+.userCardModalBody{
+   display: flex;
+   align-items: center;
+}

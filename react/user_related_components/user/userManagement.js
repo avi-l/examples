@@ -1,8 +1,7 @@
-import { awsconfig } from './cognitoCredentials';
+import { awsconfig } from './cognitoConf';
 import { Auth } from 'aws-amplify';
 import { forceReload } from '../../utilities/forceReload';
-import { getUser, getProfileUser } from './user_api';
-import { CognitoUser } from 'amazon-cognito-identity-js';
+import { getUser } from './user_api';
 
 Auth.configure(awsconfig);
 
@@ -96,17 +95,17 @@ export const cognitoEmailUsed = async (email) => {
 export const setUserInStore = async (user, setUser, isBypassCache) => {
     await isUserLoggedIn(isBypassCache)
         .then(U => {
-            const { identities } = U.attributes;
-            !identities
-                ? setUser({
-                    ...user,
-                    userId: U.attributes.sub,
-                    userHandle: U.attributes.preferred_username || U.username,
-                    isContributor: !!U.attributes['custom:contributorCode'],
-                    avatar: U.attributes.picture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-                    authProvider: 'Cognito'
-                })
-                :
+            // const { identities } = U.attributes;
+            // !identities
+            //     ? setUser({
+            //         ...user,
+            //         userId: U.attributes.sub,
+            //         userHandle: U.attributes.preferred_username || U.username,
+            //         isContributor: !!U.attributes['custom:contributorCode'],
+            //         avatar: U.attributes.picture || '/images/blank-profile-picture-973460_960_720.png',
+            //         authProvider: 'Cognito'
+            //     })
+            //     :
                 getUser({ userId: U.attributes.sub })
                     .then(localDbUser => {
                         if (!localDbUser.data) {
@@ -120,8 +119,9 @@ export const setUserInStore = async (user, setUser, isBypassCache) => {
                                 firstName: localDbUser.data?.firstName,
                                 lastName: localDbUser.data?.lastName,
                                 isContributor: !!U.attributes['custom:contributorCode'],
-                                avatar: localDbUser.data?.avatar || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                                avatar: localDbUser.data?.avatar || '/images/blank-profile-picture-973460_960_720.png',
                                 authProvider: localDbUser.data?.authProvider,
+                                unreadMsgsUserIds: localDbUser.data?.unreadMsgsUserIds
                             })
                             return true;
                         }
@@ -138,7 +138,6 @@ export const setUserProfileData = async (user, setUser, isFullDetails) => {
     return getUser({ userId: user.userId, isFullDetails })
         .then(async localDbUser => {
             if (!localDbUser.data) {
-
                 return false;
             }
             else {
@@ -150,7 +149,7 @@ export const setUserProfileData = async (user, setUser, isFullDetails) => {
                     firstName: localDbUser.data?.firstName,
                     lastName: localDbUser.data?.lastName,
                     mobilePhone: localDbUser.data?.mobilePhone,
-                    avatar: localDbUser.data?.avatar || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                    avatar: localDbUser.data?.avatar || '/images/blank-profile-picture-973460_960_720.png',
                     followers: localDbUser.data?.followers,
                     following: localDbUser.data?.following,
                     address: {
@@ -160,7 +159,8 @@ export const setUserProfileData = async (user, setUser, isFullDetails) => {
                         state: localDbUser.data?.state,
                         zip: localDbUser.data?.zip,
                         country: localDbUser.data?.country,
-                    }
+                    },
+                    unreadMsgsUserIds: localDbUser.data?.unreadMsgsUserIds
                 })
                 return true;
             }
@@ -207,7 +207,6 @@ export const deleteUserInAws = async (isBypassCache) => {
                 if (error) {
                     throw error;
                 }
-                Auth.signOut({ global: true })
                 return data;
             })
         }).catch(err => {

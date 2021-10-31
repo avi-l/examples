@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
-import { isAlphanumeric } from "validator";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { observer } from "mobx-react";
-import { forceReload } from "../../../utilities/forceReload";
-import storeContext from "../../../stores/storeContext";
-import { checkEmailExists, checkInvite } from "../user_api";
-import { cognitoEmailUsed, signUp } from "../userManagement";
-import PasswordChecklist from "react-password-checklist"
+import React, { useState, useContext } from 'react';
+import { isAlphanumeric } from 'validator';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { observer } from 'mobx-react';
+import { forceReload } from '../../../utilities/forceReload';
+import storeContext from '../../../stores/storeContext';
+import { checkEmailExists, checkInvite } from '../user_api';
+import { cognitoEmailUsed, signUp } from '../userManagement';
+import PasswordChecklist from 'react-password-checklist'
 
 const SignUpForm = observer(() => {
     const store = useContext(storeContext);
@@ -28,21 +28,21 @@ const SignUpForm = observer(() => {
     };
 
     const checkEmailInUse = async () => {
-        return await checkInvite({ email })
+        return checkInvite({ email })
             .then((res) => {
                 return res.data;
             })
             .catch(() => {
                 return false;
             })
-            || await checkEmailExists({ email })
+            || checkEmailExists({ email })
                 .then((res) => {
                     return res.data;
                 })
                 .catch(() => {
                     return false;
                 })
-            || await cognitoEmailUsed(email)
+            || cognitoEmailUsed(email)
                 .then((res) => {
                     console.log(res)
                     return res;
@@ -67,7 +67,7 @@ const SignUpForm = observer(() => {
 
             if (!isEmailUsed) {
                 setIsLoading(true);
-                await signUp(
+                signUp(
                     username,
                     password,
                     email,
@@ -84,7 +84,7 @@ const SignUpForm = observer(() => {
                                 {
                                     show: !!res.code,
                                     message: res.message,
-                                    tryAgain: res.code === "LimitExceededException" ? false : true
+                                    tryAgain: res.code === 'LimitExceededException' ? false : true
                                 }
                             );
                             setIsLoading(false);
@@ -104,14 +104,14 @@ const SignUpForm = observer(() => {
     }
 
     return (
-        <Form className="login-form-signin" onSubmit={submitUserSignUp}>
-            <Form.Group className="login-input-group">
+        <Form className='login-form-signin' onSubmit={submitUserSignUp}>
+            <Form.Group className='login-input-group'>
             <Form.Label>Username</Form.Label>
                 <Form.Control
-                    type="username"
-                    id="inputEmail"
-                    className="form-control"
-                    placeholder="Username"
+                    type='username'
+                    id='inputEmail'
+                    className='form-control'
+                    placeholder='Username'
                     value={username}
                     onChange={(e) =>
                         setUsername(e.target.value)}
@@ -119,39 +119,39 @@ const SignUpForm = observer(() => {
                     autoFocus
                 />
             </Form.Group>
-            <Form.Group className="login-input-group">
+            <Form.Group className='login-input-group'>
             <Form.Label>Email address</Form.Label>
                 <Form.Control
-                    type="email"
-                    id="email"
-                    className="form-control"
-                    placeholder="Email"
+                    type='email'
+                    id='email'
+                    className='form-control'
+                    placeholder='Email'
                     onChange={(e) =>
                         setEmail(e.target.value)}
                     value={email}
                     required
                 />
             </Form.Group>
-            <Form.Group className="login-input-group">
+            <Form.Group className='login-input-group'>
             <Form.Label>Password</Form.Label>
                 <Form.Control
-                    type="password"
-                    id="inputPassword"
-                    className="form-control"
-                    placeholder="Password"
+                    type='password'
+                    id='inputPassword'
+                    className='form-control'
+                    placeholder='Password'
                     value={password}
                     onChange={(e) =>
                         setPassword(e.target.value)}
                     required
                 />
             </Form.Group>
-            <Form.Group className="login-input-group" >
+            <Form.Group className='login-input-group' >
             <Form.Label>Re-enter Password</Form.Label>
                 <Form.Control
-                    type="password"
-                    id="passwordCopy"
-                    className="form-control"
-                    placeholder="Confirm Password"
+                    type='password'
+                    id='passwordCopy'
+                    className='form-control'
+                    placeholder='Confirm Password'
                     onChange={(e) =>
                         setPasswordCopy(e.target.value)}
                     value={passwordCopy}
@@ -159,35 +159,35 @@ const SignUpForm = observer(() => {
                 />
             </Form.Group>
             {password !== '' &&
-                <Form.Group className="login-password-validator">
+                <Form.Group className='login-password-validator'>
                     <PasswordChecklist
-                        rules={["length", "specialChar", "number", "capital", "match"]}
+                        rules={['length', 'specialChar', 'number', 'capital', 'match']}
                         minLength={8}
                         value={password}
                         valueAgain={passwordCopy}
                     // onChange={(isValid) => {}}
                     />
                 </Form.Group>}
-            <Form.Group className="login-input-group">
+            <Form.Group className='login-input-group'>
                 {!isLoading &&
                     <Button
-                        className="btn login-btn form-control submit"
-                        type="submit"
+                        className='btn login-btn form-control submit'
+                        type='submit'
                     // disabled={!validateUserDetails()}
                     >
-                        <i className="fas fa-user-plus" /> Create Account!
+                        <i className='fas fa-user-plus' /> Create Account!
                     </Button>}
             </Form.Group>
             <Form.Group>
 
                 {isLoading &&
                     <Button
-                        className="btn login-btn form-control submit"
-                        type="button"
-                        id="btn-signup"
+                        className='btn login-btn form-control submit'
+                        type='button'
+                        id='btn-signup'
                     >
                         Signing Up... &nbsp;
-                        <i className="fas fa-spinner fa-pulse"></i>
+                        <i className='fas fa-spinner fa-pulse'></i>
                     </Button>
                 }
             </Form.Group>

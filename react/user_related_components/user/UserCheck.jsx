@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
-import { isUserLoggedIn, updateCognitoUserAttributes } from "./userManagement";
-import { addUser, checkEmailExists, checkUserExists, checkUserHandleExists, deactivateCode } from "./user_api"
+import React, { useEffect, useState, useContext } from 'react';
+import { isUserLoggedIn, updateCognitoUserAttributes } from './userManagement';
+import { addUser, checkEmailExists, checkUserExists, checkUserHandleExists, deactivateCode } from './user_api'
 import '../user/profile/EditProfileModal.css'
-import Loading from "../shared/Loading";
+import Loading from '../shared/Loading';
 import { logout } from '../user/userManagement'
-import { forceReload } from "../../utilities/forceReload";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { forceReload } from '../../utilities/forceReload';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 import { isEmail, isAlphanumeric } from 'validator'
 import { CountryDropdown } from 'react-country-region-selector';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,11 +28,11 @@ const UserCheck = (() => {
     const [country, setCountry] = useState('');
     const [newZipcode, setNewZipcode] = useState('');
     const [newAvatar, setNewAvatar] = useState('');
+    const [contributorCode, setContributorCode] = useState('');
     const [authProvider, setAuthProvider] = useState('');
     const [messageUserHandle, setMessageUserHandle] = useState('');
     const [cognitoUser, setCognitoUser] = useState()
-    const blankAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-
+    const blankAvatar = '/images/blank-profile-picture-973460_960_720.png';
     const MESSAGES = {
         // invalidEmail: `Invalid Email Format`,
         // emailTaken: `Email address already in use`,
@@ -61,15 +61,27 @@ const UserCheck = (() => {
                     await checkUserExists({ userId: U.attributes.sub, userHandle: userHandleToCheck })
                         .then(async res => {
                             if (res.data.exists) {
-                                forceReload("/")
+                                forceReload('/')
                             }
                             else {
+                                if (U.attributes['custom:contributorCode']) {
+                                    await deactivateCode(
+                                        {
+                                            email: U.attributes.email,
+                                            code: U.attributes['custom:contributorCode'],
+                                            userId: U.attributes.sub,
+                                            isUsed: true,
+                                        })
+                                        .then(res => console.log(res))
+                                        .catch(err => console.error(err))
+                                }
                                 setNewUserHandle(res.data.suggestion)
                                 setNewUserId(U.attributes.sub)
                                 setNewEmail(U.attributes.email)
-                                setNewFirstName(U.attributes.given_name || "")
-                                setNewLastName(U.attributes.family_name || "")
+                                setNewFirstName(U.attributes.given_name || '')
+                                setNewLastName(U.attributes.family_name || '')
                                 setNewAvatar(U.attributes.picture || blankAvatar)
+                                setContributorCode(U.attributes['custom:contributorCode'])
                                 setAuthProvider(identities
                                     ? JSON.parse(identities)
                                         .map((item) => item.providerName)[0]
@@ -85,7 +97,7 @@ const UserCheck = (() => {
                         })
                         .catch(err => {
                             console.error(err)
-                            toast.error(`ERROR: Unable to login, backend unreachable: ${err}`, { position: "top-center" })
+                            toast.error(`ERROR: Unable to login, backend unreachable: ${err}`, { position: 'top-center' })
                             logout();
                         })
                 }
@@ -115,7 +127,7 @@ const UserCheck = (() => {
             })
             .catch(err => {
                 console.error(err)
-                toast.error(`ERROR: Unable to login, backend unreachable`, { position: "top-center" })
+                toast.error(`ERROR: Unable to login, backend unreachable`, { position: 'top-center' })
                 logout();
             });
     }
@@ -134,14 +146,15 @@ const UserCheck = (() => {
                 avatar: newAvatar,
                 mobilePhone: newPhone,
                 userHandle: newUserHandle,
+                contributorCode,
                 authProvider,
             })
             .then(() => {
-                forceReload("/")
+                forceReload('/')
             })
             .catch(err => {
                 console.error(err)
-                toast.error(`ERROR: Unable to login, backend unreachable`, { position: "top-center" })
+                toast.error(`ERROR: Unable to login, backend unreachable`, { position: 'top-center' })
                 logout();
             });
     }
@@ -176,19 +189,19 @@ const UserCheck = (() => {
                 let { exists, suggestion } = res;
                 if (exists) {
                     setMessageUserHandle(MESSAGES.userHandleSuggestion)
-                    toast.error(`${MESSAGES.userHandleTaken}, You could use ${suggestion} or try to choose another name`, { position: "top-center" })
+                    toast.error(`${MESSAGES.userHandleTaken}, You could use ${suggestion} or try to choose another name`, { position: 'top-center' })
                     setNewUserHandle(suggestion)
                     setIsSaving(false)
                     return false;
                 }
                 else {
                     // if (!isEmail(newEmail)) {
-                    //     toast.error(`${MESSAGES.invalidEmail}`, { position: "top-center" })
+                    //     toast.error(`${MESSAGES.invalidEmail}`, { position: 'top-center' })
                     //     setIsSaving(false)
                     //     return null;
                     // }
                     // if (await checkEmailInUse()) {
-                    //     toast.error(`${MESSAGES.emailTaken}`, { position: "top-center" })
+                    //     toast.error(`${MESSAGES.emailTaken}`, { position: 'top-center' })
                     //     setIsSaving(false)
                     //     return null;
                     // }
@@ -208,29 +221,29 @@ const UserCheck = (() => {
     }
     if (isLoading) {
         return (
-            <div className="user-check loading" style={{ marginTop: "200px", textAlign: "center" }}>
+            <div className='user-check loading' style={{ marginTop: '200px', textAlign: 'center' }}>
                 <Loading />
             </div>
         );
     }
     return (
         <>
-            <Form className="edit-profile-form">
-                <Form.Group as={Row} className="input-group">
-                    <Form.Row className="align-items-center">
+            <Form className='edit-profile-form'>
+                <Form.Group as={Row} className='input-group'>
+                    <Form.Row className='align-items-center'>
                         <Col>
-                            <Form.Text><h1>Welcome to LampLighter!</h1></Form.Text>
+                            <Form.Text><h1>Welcome!</h1></Form.Text>
                             <Form.Text><h5>Please edit and save your details</h5></Form.Text>
                             <Form.Text><p>You can update these later in your profile page</p></Form.Text>
                         </Col>
                     </Form.Row>
                 </Form.Group>
-                <Form.Group as={Row} className="input-group">
-                    <Form.Row className="align-items-center">
-                        <Col xs="auto">
+                <Form.Group as={Row} className='input-group'>
+                    <Form.Row className='align-items-center'>
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newUserHandle || 'Username'}
                                 value={newUserHandle}
                                 required
@@ -238,87 +251,87 @@ const UserCheck = (() => {
                         </Col>
                         {messageUserHandle}
                     </Form.Row>
-                    <Form.Row className="align-items-center">
-                        <Col xs="auto">
+                    <Form.Row className='align-items-center'>
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newFirstName || 'First Name'}
                                 value={newFirstName}
                                 onChange={(e) => setNewFirstName(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newLastName || 'Last Name'}
                                 value={newLastName}
                                 onChange={(e) => setNewLastName(e.target.value)} />
                         </Col>
-                        {/* <Col xs="auto">
+                        {/* <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newEmail || 'email@example.com'}
                                 value={newEmail}
                                 onChange={(e) => setNewEmail(e.target.value)} />
                         </Col> */}
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="tel"
-                                className="bg-light form-control"
-                                placeholder={"Phone #"}
+                                type='tel'
+                                className='bg-light form-control'
+                                placeholder={'Phone #'}
                                 value={newPhone}
                                 onChange={(e) => setNewPhone(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newStreet || 'Street'}
                                 value={newStreet}
                                 onChange={(e) => setNewStreet(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newApt || 'Apt #'}
                                 value={newApt}
                                 onChange={(e) => setNewApt(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newCity || 'City'}
                                 value={newCity}
                                 onChange={(e) => setNewCity(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="text"
-                                className="bg-light form-control"
+                                type='text'
+                                className='bg-light form-control'
                                 placeholder={newState || 'State'}
                                 value={newState}
                                 onChange={(e) => setNewState(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <Form.Control
-                                type="tel"
-                                className="bg-light form-control"
+                                type='tel'
+                                className='bg-light form-control'
                                 placeholder={newZipcode || 'ZIP Code'}
                                 value={newZipcode || ''}
                                 onChange={(e) => setNewZipcode(e.target.value)} />
                         </Col>
-                        <Col xs="auto">
+                        <Col xs='auto'>
                             <CountryDropdown value={country} onChange={(e) => setCountry(e)} />
                         </Col>
                     </Form.Row>
                     <Form.Row>
                         <Button
-                            type="button"
-                            variant="primary"
+                            type='button'
+                            variant='primary'
                             disabled={isSaving}
                             onClick={!isSaving ? handleSubmit : null}
                         >{isSaving ? 'Saving...' : 'Save Changes'}

@@ -21,7 +21,7 @@ Parameters:
   DNSZoneID:
     Type: String
     Default: FILL_IN_THE_BLANK_ZONE_ID
-    Description: ID of our LampLighter.social Hosted Zone
+    Description: ID of our Hosted Zone
 
   PublicALBCert:
     Type: String
