@@ -5,4 +5,4 @@ The 'instaclone' directory contains the code I wrote following along with the ME
 
 There are some AWS CloudFormation templates inside the aws folder
 
-In react and node folders are some components built to handle user login with aws cognito api, interactive user profile components, etc..
+In react and node folders are some components built to handle user login with aws cognito api, an instant messenger (chat) app, and some interactive user profile components, etc..
