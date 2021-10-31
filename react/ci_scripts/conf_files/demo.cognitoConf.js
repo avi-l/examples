@@ -6,17 +6,17 @@ export const awsconfig = {
         authenticationFlowType: 'USER_SRP_AUTH',
         mandatorySignIn: true,
         oauth: {
-            domain: 'demo-lamplighter-social.auth.us-east-1.amazoncognito.com',
-            redirectSignIn: 'https://demo.lamplighter.social/userCheck/',
-            redirectSignOut: 'https://demo.lamplighter.social/',
+            domain: 'FILL_IN_THE_BLANK',
+            redirectSignIn: 'FILL_IN_THE_BLANK',
+            redirectSignOut: 'FILL_IN_THE_BLANK/',
             responseType: 'code',
         },
     },
     API: {
         endpoints: [
             {
-                name: 'DEMO-USER-POOL',
-                endpoint: 'https://demo-lamplighter-social.auth.us-east-1.amazoncognito.com'
+                name: 'FILL_IN_THE_BLANK',
+                endpoint: 'FILL_IN_THE_BLANK'
             },
         ]
     }
