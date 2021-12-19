@@ -12,12 +12,12 @@ const MessageSchema = new Schema(
         text: {
             type: String
         },
+        quotedMessageId: {
+            type: String,
+        },
         timestamp: {
             type: Number
         },
-        receiverHasRead: {
-            type: Boolean
-        }
     }
 );
 

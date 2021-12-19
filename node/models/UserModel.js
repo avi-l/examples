@@ -22,10 +22,13 @@ const UserSchema = new Schema({
     userId: String,
     zip: String,
     contributorCode: String,
+    isAssistant: Boolean,
     authProvider: String,
     active: Boolean,
     deprecated: Boolean,
     documentId: String,
+    isAssistant: Boolean,
+    assistantRecord: [Schema.Types.Mixed],
     followers: [],
     following: [],
     unreadMsgsUserIds: []

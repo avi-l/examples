@@ -1,108 +1,62 @@
 const express = require('express');
 const UserRoute = express.Router();
+const mongoose = require('mongoose');
 const Users = require('../models/UserModel');
 const request = require('request');
 const {sendMail} = require('../shared/mailer');
 const cloudinary = require('cloudinary').v2
 
-UserRoute.route('/signCloudindaryURL').post(async (req, res) => {
+UserRoute.route('/signCloudindaryURL').post((req, res) => {
     let timestamp = Math.round((new Date).getTime() / 1000);
     try {
-        let signature = cloudinary.utils.api_sign_request({
+        const signature = cloudinary.utils.api_sign_request({
             timestamp: timestamp,
             eager: 'w_150,h_150,c_crop',
-            folder: 'avatars',
+            folder: req.body.folder,
             public_id: timestamp
         }, process.env.CLOUDINARY_API_SECRET)
         res.json({signature, timestamp});
     } catch (err) {
-        res.send(err);
+        res.status(500).send(err);
     }
 })
 
-UserRoute.route('/checkEmailExists').post((req, res) => {
-    Users.exists({'email': {$eq: req.body.email}})
+
+UserRoute.route('/checkEmailExists').get((req, res) => {
+    Users.exists({'email': {$eq: req.query.email}})
         .then(Found => {
             res.send(Found);
         })
         .catch(err => res.send(err));
 });
 
-UserRoute.route('/checkUserExists').post((req, res) => {
-    let userHandle = req.body.userHandle;
-    Users.exists({'userId': req.body.userId})
-        .then(userIdExists => {
-            if (!userIdExists) {
-                Users.exists({userHandle})
-                    .then(handleExists => {
-                        if (handleExists) {
-                            Users.countDocuments({
-                                userHandle: {
-                                    $regex: req.body.userHandle,
-                                    $options: 'i'
-                                }
-                            }, (err, result) => {
-                                if (err) {
-                                    res.send(err)
-                                } else {
-                                    let freeHandle = false;
-                                    while (!freeHandle) {
-                                        let suggestion = userHandle.concat(result.toString())
-                                        Users.exists({'userHandle': suggestion})
-                                            .then(found => {
-                                                if (!found) {
-                                                    freeHandle = true
-                                                    res.json({exists: false, count: result, suggestion})
-                                                } else result += 1
-                                            })
-                                            .catch(err => console.log(err))
-                                        freeHandle = true;
-                                    }
-                                }
-                            })
-                        } else {
-                            res.json({exists: false, count: 1, suggestion: userHandle})
-                        }
-                    })
-                    .catch(err => res.send(err));
-            } else {
-                res.json({exists: true, count: 1, suggestion: userHandle})
-            }
-        })
-        .catch(err => res.send(err));
+UserRoute.route('/checkUserExists').get(async (req, res) => {
+    try {
+        const exists = await Users.exists({userId: req.query.userId})
+        res.json({exists})
+    } catch (error) {
+        res.status(500).send(error)
+    }
 });
 
-UserRoute.route('/checkUserHandleExists').post((req, res) => {
-    let userHandle = req.body.userHandle;
-    Users.exists({userHandle})
-        .then(handleExists => {
-            if (handleExists) {
-                Users.countDocuments({userHandle: {$regex: userHandle, $options: 'i'}}, (err, result) => {
-                    if (err) {
-                        res.send(err)
-                    } else {
-                        if (result > 0) {
-                            let freeHandle = false;
-                            while (!freeHandle) {
-                                let suggestion = userHandle.concat(result.toString())
-                                Users.exists({'userHandle': suggestion})
-                                    .then(found => {
-                                        if (!found) {
-                                            freeHandle = true
-                                            res.json({exists: handleExists, count: result, suggestion})
-                                        } else result += 1
-                                    })
-                                    .catch(err => console.log(err))
-                                freeHandle = true;
-                            }
-                        } else res.json({exists, count: result, suggestion: userHandle})
-                    }
-                })
-            } else {
-                res.json({exists: false, count: 1, suggestion: userHandle})
-            }
-        })
-        .catch(err => res.send(err));
+UserRoute.route('/checkUserHandleExists').get(async (req, res) => {
+    try {
+        let suggestion = req.query.userHandle;
+        let count = 0;
+        let found = await Users.exists({userHandle: suggestion})
+        if (!found) {
+            res.json({exists: false, count, suggestion})
+            return
+        }
+        while (found) {
+            count += 1
+            suggestion = suggestion.concat(count.toString())
+            found = await Users.exists({userHandle: suggestion})
+        }
+        res.json({exists: true, count, suggestion})
+    } catch (error) {
+        res.status(500).send(error)
+    }
 });
 
 UserRoute.route('/addUser').post((req, res) => {
@@ -143,38 +97,85 @@ UserRoute.route('/deactivateUser').post((req, res) => {
     }).catch(err => res.send(err));
 });
 
-UserRoute.route('/getUser').post((req, res) => {
-    if (req.body.isFullDetails) {
-        Users.findOne({userId: req.body.userId})
-            .select("-_id -__v -cardNumber -cvc -expiration -nameOnCard")
-            .then(user => res.json(user))
-            .catch(err => res.send(err))
-    } else {
-        Users.findOne({userId: req.body.userId})
-            .select("userId userHandle avatar firstName lastName followers following unreadMsgsUserIds")
-            .then(user => res.json(user))
-            .catch(err => res.send(err))
-    }
-});
-UserRoute.route('/getFollowDetails').post(async (req, res) => {
-    if (req.body.length) {
-        try {
-            const userIds = req.body.map((U) => U.userId);
-            let result = await Users.find({userId: {$in: userIds}})
-                .lean()
-                .select("-_id userId userHandle avatar firstName lastName")
-                .map(followArr => {
-                    return followArr
-                })
-            res.json(result)
-        } catch (err) {
-            res.send(err)
+UserRoute.route('/getUser').get(async (req, res) => {
+    try {
+        if (req.query.isFullDetails) {
+            const user = await Users.findOne({userId: req.query.userId})
+                .select("-_id -__v -cardNumber -cvc -expiration -nameOnCard")
+            res.json(user)
+        } else {
+            const user = await Users.findOne({ userId: req.query.userId })
+                .select("userId userHandle avatar firstName lastName followers following unreadMsgsUserIds contributorCode authProvider isAssistant")
+            res.json(user)
         }
+    } catch (error) {
+        res.status(500).send(error)
     }
 });
+UserRoute.route('/getFollowDetails').get(async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit); // Make sure to parse the limit to number
+        const skip = parseInt(req.query.skip);// Make sure to parse the skip to number
+        const field = req.query.type
+        Users.aggregate([
+            {$match: {userId: req.query.userId}},
+            {$project: {followers: 1, following: 1}},
+            {
+                $lookup: {
+                    from: 'users',
+                    let: {'following': '$following'},
+                    pipeline: [
+                        {$match: {$expr: {'$in': ['$userId', '$$following.userId']}}},
+                        {$project: {'userId': 1, 'avatar': 1, 'firstName': 1, 'lastName': 1, 'userHandle': 1}}
+                    ],
+                    as: 'followingArr'
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: {'followers': '$followers'},
+                    pipeline: [
+                        {$match: {$expr: {'$in': ['$userId', '$$followers.userId']}}},
+                        {$project: {'userId': 1, 'avatar': 1, 'firstName': 1, 'lastName': 1, 'userHandle': 1}}
+                    ],
+                    as: 'followersArr'
+                },
+            }
+        ]).exec(async (err, followArrOfUserDetails) => {
+            if (err) {
+                res.json(err);
+            } else {
+                res.status(200).json({
+                    followers: followArrOfUserDetails[0].followersArr,
+                    following: followArrOfUserDetails[0].followingArr
+                });
+            }
+        })
+    } catch (err) {
+        res.send(err)
+    }
 
-UserRoute.route('/searchUsers').post((req, res) => {
-    Users.find({userHandle: {$regex: req.body.userHandle, $options: 'i'}})
+});
+// UserRoute.route('/getFollowDetails').get(async (req, res) => {
+//     console.log(req.query)
+//         try {
+//             // const userIds = req.query.map((U) => U.userId);
+//             let result = await Users.find({ userId: { $in: req.query } })
+//                 .lean()
+//                 .select("-_id userId userHandle avatar firstName lastName")
+//                 .map(followArr => {
+//                     return followArr
+//                 })
+//             res.json(result)
+//         } catch (err) {
+//             res.send(err)
+//         }
+
+// });
+
+UserRoute.route('/searchUsers').get((req, res) => {
+    Users.find({userHandle: {$regex: req.query.userHandle, $options: 'i'}})
         .where('active').ne(false)
         .select("userId userHandle avatar firstName lastName followers following")
         .then(user => {
@@ -182,33 +183,35 @@ UserRoute.route('/searchUsers').post((req, res) => {
         })
         .catch(err => res.send(err))
 });
-UserRoute.route('/updateUserDetails').post((req, res) => {
-    Users.updateOne(
-        {'userId': {$eq: req.body.userId}},
-        {
-            $set: {
-                email: req.body.email,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                mobilePhone: req.body.mobilePhone,
-                userHandle: req.body.userHandle,
-                avatar: req.body.avatar,
-                address1: req.body.address?.address1,
-                address2: req.body.address?.address2,
-                city: req.body.address?.city,
-                state: req.body.address?.state,
-                zip: req.body.address?.zip,
-                country: req.body.address?.country,
-                nameOnCard: req.body.cc?.nameOnCard,
-                cardNumber: req.body.cc?.cardNumber,
-                cvc: req.body.cc?.cvc,
-                expiration: req.body.cc?.expiration,
-            }
-        },
-        {omitUndefined: true},
-    ).then(() => {
-        res.status(200).json({'User': 'User info added successfully'});
-    }).catch(err => res.send(err));
+UserRoute.route('/updateUserDetails').post(async (req, res) => {
+    try {
+        await Users.updateOne(
+            {'userId': {$eq: req.body.userId}},
+            {
+                $set: {
+                    email: req.body.email,
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    mobilePhone: req.body.mobilePhone,
+                    userHandle: req.body.userHandle,
+                    avatar: req.body.avatar,
+                    address1: req.body.address?.address1,
+                    address2: req.body.address?.address2,
+                    city: req.body.address?.city,
+                    state: req.body.address?.state,
+                    zip: req.body.address?.zip,
+                    country: req.body.address?.country,
+                    nameOnCard: req.body.cc?.nameOnCard,
+                    cardNumber: req.body.cc?.cardNumber,
+                    cvc: req.body.cc?.cvc,
+                    expiration: req.body.cc?.expiration,
+                }
+            },
+            {omitUndefined: true})
+        res.status(200).send({'User': 'User info updated successfully'})
+    } catch (error) {
+        res.status(400).json(error)
+    }
 });
 
 UserRoute.route('/userInfo').post(function (req, res) {
@@ -242,7 +245,6 @@ UserRoute.route('/userInfo').post(function (req, res) {
 UserRoute.route('/deleteUser').post((req, res) => {
     Users.deleteOne({'userId': {$eq: req.query.userId}},)
         .then(() => {
-            console.log('User deleted');
             res.status(200).json({'User': 'User removed'});
         })
         .catch(err => res.send(err));
@@ -269,14 +271,16 @@ UserRoute.route('/verifyRealName').post((req, res) => {
         });
 });
 
-UserRoute.route('/emailUser').post((req) => {
+UserRoute.route('/emailUser').post(async (req) => {
     try {
-        sendMail(req.body.emailObj.email,
+        let res = sendMail(req.body.emailObj.email,
             req.body.emailObj.subject,
             req.body.emailObj.body,
         )
+        return res;
     } catch (err) {
         console.log('unable to send email')
+        return err;
     }
 });
 UserRoute.route('/follow').post((req, res) => {
@@ -301,6 +305,7 @@ UserRoute.route('/follow').post((req, res) => {
                 })
         })
 });
+
 UserRoute.route('/unfollow').post((req, res) => {
     Users.updateOne(
         {'userId': req.body.followee.userId},
