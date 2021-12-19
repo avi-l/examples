@@ -1,0 +1,72 @@
+.followers-modal{
+   margin-top: 200px !important;
+   margin-bottom: auto;
+   border-radius: 12px;
+}
+.followers-modal-title{
+   align-items: center;
+   flex-grow: 1;
+   font-size: 16px;
+   font-weight: 400;
+   justify-content: center;
+   line-height: 24px;
+   text-align: center;
+}
+.followers-modal-body{
+   height: calc(100vh - 350px) !important;
+   max-height: calc(100vh - 340px) !important;
+   margin-bottom: auto;
+   text-align: left;
+   border-radius: .25rem;
+   overflow: hidden;
+}
+.followers-avatar {
+   margin-right: 8px;
+   vertical-align: middle;
+   width: 45px;
+   height: 45px;
+   border-radius: 50%;
+}
+.followers-modal-list-name {
+   text-indent: 56px; 
+}
+.followers-loading {
+    margin-top: 200px;
+    text-align: center; 
+}
+.followers-hover {
+   cursor: pointer;
+}
+
+.followers-list-item {
+   /* padding-bottom: 8px; */
+   /* padding-top: 8px; */
+   border: none;
+}
+.followers-card-body {
+   flex: 1 1 auto;
+   min-height: 1px;
+   padding: 1rem;
+}
+.followers-scrollable {
+   position: relative !important;
+   overflow-y: auto;
+   height: calc(100vh - 360px) !important;
+   max-height: calc(100vh - 340px) !important;
+   margin-bottom: none;
+   text-align: left;
+   border-radius: .25rem;
+   /* scrollbar-width: 0;   */
+
+}
+.followers-keep-scrolling {
+   overflow-y: scroll; /* Add the ability to scroll y axis*/
+   height: calc(100vh - 350px) !important;
+   max-height: calc(100vh - 330px) !important;
+ }
+ 
+ /* Hide scrollbar for Chrome, Safari and Opera */
+ .followers-keep-scrolling::-webkit-scrollbar {
+     display: none;
+ }
+ 

@@ -1,0 +1,50 @@
+.conversation {
+    padding-left: 20px;
+
+}
+.conversation-selected {
+    padding-left: 20px;
+    box-shadow: 4px 0 0 var(--primary) inset;
+}
+
+
+
+.conversation:hover {
+    /* background-color: #301B3F; */
+}
+.conversationImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    /* margin-right: 20px; */
+}
+.conversationImgUnread {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    /* margin-right: 20px; */
+    border: 2px solid var(--primary);
+}
+.conversationName {
+    font-weight: 500;
+    /* color: var(--lighter); */
+    color: var(--grey);
+}
+.conversationTime {
+    font-weight: 50;
+    font-size: 8pt;
+    /* color: var(--lighter); */
+    color: var(--grey);
+}
+.conversationNewMsgIcon {
+    padding: 5px;
+    margin-left: 10px;
+    color: var(--secondary)
+}
+.conversationTxtPreview {
+    font-size: 10px;
+    margin-top: -15px;
+    padding-left: 50px;
+}

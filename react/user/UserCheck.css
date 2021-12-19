@@ -1,0 +1,40 @@
+
+
+.userCheck-card {
+    margin-top: 50px;
+    border-radius: 10px;
+    padding: 20px;
+    width: 25rem;
+    height: 75vh;
+    text-align: left;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.userCheck-card-header {
+    width: 20rem;
+    background-color: inherit;
+    
+    
+}
+.userCheck-nav-tabs .userCheck-nav-tabs.active {
+    /* background-color: #50595c48; */
+}
+.userCheck-card-title {
+    color: #2986DA;
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+    
+}
+.userCheck-input-group {
+    padding-top: 5px;
+}
+.userCheck-btn {
+    padding-top: 5px;
+    text-align: center;
+}
+.userCheck-card-body {
+    /* height: 25vh; */
+/* margin-left: 25px !important; */
+/* margin-right: -10px !important; */
+}
