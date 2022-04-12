@@ -5,13 +5,13 @@ import storeContext from '../../../stores/storeContext';
 import { observer } from 'mobx-react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { toast } from 'react-toastify';
 
 const VerifyCodeForm = observer((props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { contribData: { contributorCode } } = props;
   const store = useContext(storeContext);
-  const { modalStore, loginStore } = store;
-  const { setShowErrorPopup } = modalStore;
+  const { loginStore } = store;
   const { username, email, password, signUpVerifyCode, setSignUpVerifyCode } = loginStore;
 
   const handleSubmit = async (event) => {
@@ -20,7 +20,7 @@ const VerifyCodeForm = observer((props) => {
     try {
       const res = await confirmSignUp(username, signUpVerifyCode)
       if (res.code === 'CodeMismatchException') {
-        setShowErrorPopup({ show: true, message: `${res.message}`, tryAgain: true });
+        toast.error(res.message);
         setIsLoading(false);
         return;
       }
@@ -31,59 +31,61 @@ const VerifyCodeForm = observer((props) => {
           return forceReload(path);
         }
         else {
-          setShowErrorPopup({ show: true, message: 'Problem signing up.', tryAgain: true });
+          toast.error('Unable to sign in');
           setIsLoading(false);
           return;
         }
       }
     } catch (error) {
-      setShowErrorPopup({ show: true, message: error, tryAgain: true });
+      toast.error(`Error: ${error.message}`)
       setIsLoading(false);
     }
   };
 
   return (
-    <Form className='form-signin' onSubmit={handleSubmit}>
-      <p>
-        A verification code has been sent to <b>{email}</b>. To confirm your
-        new account please enter code:
-      </p>
-      <Form.Group className='input-group' >
-        <Form.Control
-          autoFocus
-          type='code'
-          id='signUpVerifyCode'
-          placeholder='Confirmation Code'
-          onChange={(e) =>
-            setSignUpVerifyCode(e.target.value)}
-          value={signUpVerifyCode}
-        />
-      </Form.Group>
-      <div className='input-group'>
-        <Button
-          className='btn form-control submit'
-          type='submit'
-          disabled={!signUpVerifyCode || isLoading}
-        >
-          {isLoading
-            ? <>Verifying..{'  '}<i className='fas fa-spinner fa-pulse' /></>
-            : <><i className='fas fa-home' />Confirm</>
-          }
-        </Button>
-      </div>
-      <hr />
-      <div className='input-group'>
-        {!isLoading &&
+    <>
+      <Form className='form-signin' onSubmit={handleSubmit}>
+        <p>
+          A verification code has been sent to <b>{email}</b>. To confirm your
+          new account please enter code:
+        </p>
+        <Form.Group className='input-group' >
+          <Form.Control
+            autoFocus
+            type='code'
+            id='signUpVerifyCode'
+            placeholder='Confirmation Code'
+            onChange={(e) =>
+              setSignUpVerifyCode(e.target.value)}
+            value={signUpVerifyCode}
+          />
+        </Form.Group>
+        <div className='input-group'>
           <Button
             className='btn form-control submit'
-            type='button'
-            onClick={() => forceReload('/signIn')}
+            type='submit'
+            disabled={!signUpVerifyCode || isLoading}
           >
-            <i className='fas fa-sign-in-alt fa-flip-horizontal' /> Cancel
+            {isLoading
+              ? <>Verifying..{'  '}<i className='fas fa-spinner fa-pulse' /></>
+              : <><i className='fas fa-home' />Confirm</>
+            }
           </Button>
-        }
-      </div>
-    </Form>
+        </div>
+        <hr />
+        <div className='input-group'>
+          {!isLoading &&
+            <Button
+              className='btn form-control submit'
+              type='button'
+              onClick={() => forceReload('/signIn')}
+            >
+              <i className='fas fa-sign-in-alt fa-flip-horizontal' /> Cancel
+            </Button>
+          }
+        </div>
+      </Form>
+    </>
   );
 });
 

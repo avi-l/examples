@@ -7,17 +7,19 @@ import { deleteUserInAws, logout } from './userManagement';
 import './DeleteAccountForm.css';
 import { deactivateUser } from './user_api';
 import { toast } from 'react-toastify';
-import { ButtonGroup, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
+import ConfirmCancelModal from '../../utilities/ConfirmCancelModal';
 
 const DeleteAccountForm = observer(() => {
     const [isLoading, setIsloading] = useState(false);
+    const [showConfirmCancelModal, setShowConfirmCancelModal] = useState({ show: false, message: '', action: '' })
+    const { show, message, action } = showConfirmCancelModal;
     const store = useContext(storeContext);
-    const { modalStore, userStore } = store;
+    const { userStore } = store;
     const { user: { userId } } = userStore;
-    const { setShowConfirmCancelPopup } = modalStore;
 
     const MESSAGES = {
-        confirm: `Are you sure you wish to deactivate your account?`,
+        confirm: `Are you sure you wish to deactivate your account? `,
         success: `Your account has been deactivated. We hope you sign up again soon!`,
         failure: `There was an issue with deactivating your account. Please try again`,
     }
@@ -34,40 +36,51 @@ const DeleteAccountForm = observer(() => {
     }
 
     return (
-        <div className='deactivateAccount-card-container'>
-            <div className='deactivateAccount-card-center'>
-                <Card>
-                    <Card.Body>
+        <div className='deactivateAccount-card-page'>
+            <ConfirmCancelModal
+                show={show}
+                message={message}
+                action={action}
+                close={() => setShowConfirmCancelModal({ show: false, message: '', action: '' })}
+            />
+            <div className='deactivateAccount-card-wrapper'>
+                <Card className='deactivateAccount-card-center' border='danger'>
+                    <Card.Header className='deactivateAccount-card-header'>
+                        <i className="fas fa-exclamation-triangle"></i>
+                        Deactivate Account
+                        <i className="fas fa-exclamation-triangle"></i>
+                    </Card.Header>
+                    <Card.Body as='b'>
                         We'll be sorry to see you leave!
                     </Card.Body>
-                    <Card.Footer className='btnGroup'>
-                        <ButtonGroup>
-                            {!isLoading
-                                ? <>
-                                    <Button
-                                        variant='primary'
-                                        onClick={() => setShowConfirmCancelPopup({ show: true, message: MESSAGES.confirm, action: deleteAccount })}
-                                    >
-                                        Deactivate
-                                    </Button>
-                                    <Button
-                                        variant='secondary'
-                                        onClick={() => forceReload('/profile')}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </>
-                                : <>
-                                    <Button variant='secondary' >
-                                        <i className='fas fa-spinner fa-pulse' /> Deactivating... &nbsp;
-                                    </Button>
-                                </>
-                            }
-                        </ButtonGroup>
+                    <Card.Footer className='deactivate-account-card-footer'>
+                        {!isLoading
+                            ? <>
+                                <Button
+                                    size='sm'
+                                    className='deactivate-account-btn'
+                                    variant='outline-danger'
+                                    onClick={() => setShowConfirmCancelModal({ show: true, message: MESSAGES.confirm, action: deleteAccount })}
+                                >
+                                    Deactivate
+                                </Button>
+                                <Button
+                                    size='sm'
+                                    className='deactivate-account-btn'
+                                    variant='outline-primary'
+                                    onClick={() => forceReload('/profile')}
+                                >
+                                    Cancel
+                                </Button>
+                            </>
+                            : <>
+                                <Button size='sm' className='deactivate-account-btn' variant='secondary'>
+                                    <i className='fas fa-spinner fa-pulse' /> Deactivating... &nbsp;
+                                </Button>
+                            </>}
                     </Card.Footer>
                 </Card>
             </div>
-
         </div>
     );
 });

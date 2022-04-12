@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './Profile.css'
 import ProfileDisplay from './ProfileDisplay';
-import Loading from '../../shared/Loading';
 import { isUserLoggedIn, onAuthError } from '../userManagement';
 import { withRouter, useHistory } from 'react-router-dom';
 import queryString from 'query-string';
-import ErrorsModal from '../shared/ErrorsModal';
+import { LoadingIcon } from '../../shared/Loaders';
 
 const Profile = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -15,18 +14,17 @@ const Profile = () => {
 
     useEffect(() => {
         (async () => {
-            const res = await isUserLoggedIn(false)
+            const res = await isUserLoggedIn(true)
             if (!res.attributes?.sub) return onAuthError()
             setIsLoading(false)
         })()
     }, [])
 
-    if (isLoading) return (<div className='profile-loading'><Loading /></div>)
+    if (isLoading) return (<div className='profile-loading'><LoadingIcon /></div>)
 
     return (
         <>
             <ProfileDisplay profileUserId={profileUserId} />
-            <ErrorsModal />
         </>
     )
 };

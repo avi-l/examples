@@ -1,0 +1,191 @@
+.channelPage-container {
+    overflow: hidden;
+    width: 100vw;
+    height:100vh;
+    /* color: #2986DA; */
+    color: var(--light);  
+    background-color: #000000;
+}
+.loading-bar {
+    margin-top: 56px;
+}
+.channelPage-wrapper {
+    justify-content: center;
+    max-width: 85vw !important;
+    margin-top: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    width: auto;
+}
+
+.channelPage-loader {
+    overflow-x: hidden;
+    width: auto;
+    max-width: 85vw !important;
+    margin-top: 60px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.channelPage-navbar {
+    margin: auto;
+
+    max-width: 75vw;
+}
+.channelPage-navbar-avatar {
+    width: 80px;
+    height: 80px;
+}
+.channelPage-navbar-search, .channelPage-navbar-search:focus {
+    /* border-radius: 50px !important; */
+    /* width: 350px !important; */
+    text-align: left;
+    margin-right: 10px;
+    margin-bottom: 0 !important;
+    background-color: #000000;
+    border-bottom: 2px solid grey !important;
+    padding-left: 0px !important;
+    color: #e8e8e8;
+}
+
+.channelPage-navbar-title {
+    display: inline;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    font-weight: 400;
+    font-size: 1.4rem;
+    padding-left: 10px;
+    /* line-height: 3rem; */
+}
+.channelPage-navbar-subscribers {
+    color: grey;
+    font-size: .8rem;
+    font-weight: 400;
+}
+.channelPage-subscribe-icon {
+    cursor: pointer;
+    font-size: 12pt;
+    padding-left: 10px;
+    /* margin-right: 4px; */
+    margin-bottom: 0 !important;
+}
+.channelPage-bookmark-icon {
+    font-size: 12pt;
+    /* cursor: pointer; */
+    padding-left: 10px;
+    /* margin-right: 4px; */
+    margin-bottom: 0 !important;
+}
+.channelPage-subscribe {
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    margin-right: 10px;
+    margin-bottom: 0 !important;
+    font-weight: 300;
+}
+.channelPage-share {
+    cursor: pointer;
+}
+.channelPage-share:hover {
+    color: #2986DA
+}
+
+.channelPage-navLinks {
+    margin: auto;
+    max-width: 75vw;
+}
+.channelPage-navLinks-active-tab {
+    font-weight: 400;
+    background-color: none !important;
+    border-bottom: 2px solid #2986DA;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.channelPage-navLinks-tab {
+    font-weight: 400;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.channelPage-main-body {
+    /* max-width: calc(100vw - 350px); */
+    height: 80%;
+    max-width: 80vw;
+    padding-top: 8px;
+    overflow: scroll !important;
+    /* height: 72vh; */
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.channelPage-cards-wrapper {
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
+    height: 70vh;
+    max-width: 80vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: none;  
+    overflow: scroll;
+}
+.channelPage-cardGroup {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    /* width: 100vw; */
+    max-width: calc(100vw - 350px);
+}
+.channelPage-cardGroup-card {
+    margin: 2px;
+}
+.channelPage-card-hover-effect:hover {
+    -webkit-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
+}
+.channelPage-playlist-wrapper {
+    margin-top: 10px;
+    max-width: 85vw !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: none;
+    color: var(--dark);
+}
+
+.subscriber-wrapper {
+    margin-top: 10px;
+    max-width: 85vw !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: none;
+}
+
+.channelPage-owner-col {
+    /* color: var(--dark); */
+    padding: 10px;
+    text-align: center;
+    /* background-color: #fff; */
+
+}
+.channelPage-owner-col:hover {
+    -webkit-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.01);
+}
+.channelPage-owner-icon {
+    font-size: 14pt;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: #2986DA;
+}
+.channelPage-owner-title {
+    padding-top: 10px;
+    font-size: 14pt;
+    font-weight: 300;
+
+}

@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { isUserLoggedIn, updateCognitoUserAttributes } from './userManagement';
 import { addUser, checkUserExists, checkUserHandleExists, deactivateCode, getUser } from './user_api'
-import Loading from '../shared/Loading';
 import { logout } from '../user/userManagement'
 import { forceReload } from '../../utilities/forceReload';
 import { Button, Card, Form, FormControl, InputGroup, Nav } from 'react-bootstrap';
-import { isAlphanumeric } from 'validator'
+import isAlphanumeric from 'validator/lib/isAlphanumeric';
 import { CountryDropdown } from 'react-country-region-selector';
-import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { Hub } from 'aws-amplify';
 import './UserCheck.css'
 import VerifyContributorLink from './contributorLogin/VerifyContributorLink';
-import ErrorsModal from './shared/ErrorsModal';
 import { sendEmailToUser } from '../email/sendEmail_api';
+import { LoadingIcon } from '../shared/Loaders';
 
 const UserCheck = (() => {
     const params = new URL(document.location).searchParams;
@@ -21,37 +19,41 @@ const UserCheck = (() => {
     const [isSaving, setIsSaving] = useState(false);
     const [isVerifyInvite, setIsVerifyInvite] = useState(false);
     const [contribData, setContribData] = useState({ contributorCode: params.get('contributorCode') });
-    const [cognitoUser, setCognitoUser] = useState()
+    const [cognitoUser, setCognitoUser] = useState();
+    const [userResources, setUserResources] = useState({
+            userId: '',
+            email: '',
+            mobilePhone: '',
+            address1: '',
+            address2: '',
+            city: '',
+            state: '',
+            country: '',
+            zip: '',
+        })
     const [userData, setUserData] = useState({
-        userId: '',
-        email: '',
-        firstName: '',
-        lastName: '',
-        mobilePhone: '',
-        userHandle: '',
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        country: '',
-        newZipcode: '',
-        avatar: '',
-        contributorCode: '',
-        authProvider: '',
-        isAssistant: false,
-    })
-    const { firstName, lastName, mobilePhone, userHandle, address1, email,
-        address2, city, state, country, newZipcode, userId, contributorCode } = userData;
-    const blankAvatar = '/images/blank-profile-picture-973460_960_720.png';
+            userId: '',
+            firstName: '',
+            lastName: '',
+            userHandle: '',
+            avatar: '',
+            authProvider: '',
+            isAssistant: false,
+            isContributor: false,
+            contributorCode: '',
+        })
+    const { firstName, lastName, userHandle, userId, contributorCode } = userData;
+    const { mobilePhone, address1, email,
+        address2, city, state, country, zip} = userResources;
+
 
     const MESSAGES = {
-        checkingAvailability: <Form.Text style={{ color: 'green' }}>Checking username availability...
-            <i className='fas fa-circle-notch fa-spin fa-xs' style={{ color: 'green' }} /></Form.Text>,
+        checkingAvailability: ' Checking username availability...',
         userHandleTaken: `${userHandle} is already taken.`,
-        invalidUserHandle: <Form.Text style={{ color: 'red' }}>Alphanumeric only please</Form.Text>,
-        userHandleBlank: <Form.Text style={{ color: 'red' }}>Username is required</Form.Text>,
-        userHandleFree: <Form.Text style={{ color: 'blue' }}>Username is available!</Form.Text>,
-        userHandleSuggestion: <Form.Text style={{ color: 'green' }}>Suggested Username</Form.Text>,
+        invalidUserHandle: 'Letters and/or numbers only please',
+        userHandleBlank: 'Username is required',
+        userHandleFree: 'Username is available!',
+        userHandleSuggestion: 'Suggested Username',
         success: 'Your details have been saved. Taking you to REPLACE_HOSTNAME.Social now!',
         emailSubject: `Welcome to REPLACE_HOSTNAME.Social!`,
         emailBody: `Hello ${userHandle}! 
@@ -59,7 +61,7 @@ const UserCheck = (() => {
           We'll put some more interesting info here soon.
           REPLACE_HOSTNAME Team`,
     }
-    const [messageUserHandle, setMessageUserHandle] = useState(MESSAGES.checkingAvailability);
+    const [warningMsg, setWarningMsg] = useState('');
 
     Hub.listen('auth', async ({ payload: { event, data } }) => {
         if (event === 'customOAuthState') {
@@ -73,10 +75,11 @@ const UserCheck = (() => {
         const setInitialUserData = async () => {
             try {
                 const MESSAGES = {
-                    userHandleFree: <Form.Text style={{ color: 'blue' }}>Username is available!</Form.Text>,
-                    userHandleSuggestion: <Form.Text style={{ color: 'green' }}>Suggested Username</Form.Text>
+                    userHandleFree: 'Username is available!',
+                    userHandleSuggestion: 'Suggested Username'
                 }
-                const user = await isUserLoggedIn(false)
+                const user = await isUserLoggedIn(true)
+                console.log(user)
                 if (!user.attributes?.sub) {
                     toast.error('Please log in to continue',
                         { position: 'top-center', autoClose: 2500, onClose: () => logout() });
@@ -113,21 +116,25 @@ const UserCheck = (() => {
                     setUserData(prev => ({
                         ...prev,
                         userId: user.attributes.sub,
-                        email: user.attributes.email,
                         firstName: user.attributes.given_name || '',
                         lastName: user.attributes.family_name || '',
-                        avatar: user.attributes.picture || blankAvatar,
+                        avatar: process.env.REACT_APP_BLANK_USER_AVATAR,
                         contributorCode: user.attributes['custom:contributorCode'],
+                        isContributor: user.attributes['custom:contributorCode'] ? true : false,
                         authProvider: identities
                             ? JSON.parse(identities)
                                 .map((item) => item.providerName)[0]
                             : 'Cognito'
-                    })
-                    )
+                    }))
+                    setUserResources(prev => ({
+                        ...prev,
+                        userId: user.attributes.sub,
+                        email: user.attributes.email,
+                    }))
                     const res = await checkUserHandleExists({ userHandle: newUserHandle })
                     const { exists, suggestion } = res;
                     if (exists) {
-                        setMessageUserHandle(MESSAGES.userHandleSuggestion)
+                        setWarningMsg(MESSAGES.userHandleSuggestion)
                         toast.error(`${MESSAGES.userHandleTaken}, You could use ${suggestion} or try to choose another name`,
                             { position: 'top-center', autoClose: 2500, })
                         setUserData(prev => ({ ...prev, userHandle: suggestion }))
@@ -135,10 +142,7 @@ const UserCheck = (() => {
                         return false;
                     }
                     if (newUserHandle === suggestion) {
-                        setMessageUserHandle(MESSAGES.userHandleFree)
-                    }
-                    else {
-                        setMessageUserHandle(MESSAGES.userHandleSuggestion)
+                        setWarningMsg(MESSAGES.userHandleFree)
                     }
                     return setIsLoading(false)
                 }
@@ -155,18 +159,18 @@ const UserCheck = (() => {
     const verifyUserHandleFormat = (e) => {
         setUserData({ ...userData, userHandle: e })
         if (e !== '' && !isAlphanumeric(e)) {
-            return setMessageUserHandle(MESSAGES.invalidUserHandle)
+            return setWarningMsg(MESSAGES.invalidUserHandle)
         }
         if (e === '') {
             setUserData({ ...userData, userHandle: '' })
-            return setMessageUserHandle(MESSAGES.userHandleBlank)
+            return setWarningMsg(MESSAGES.userHandleBlank)
         }
-        setMessageUserHandle('')
+        setWarningMsg('')
     }
 
     const addUserToDB = async () => {
         try {
-            const res = await addUser(userData)
+            const res = await addUser({userData, userResources})
             if (contributorCode) {
                 await deactivateCode(
                     {
@@ -195,19 +199,27 @@ const UserCheck = (() => {
             return res;
         } catch (err) {
             setIsSaving(false)
-            return toast.error(`${err}`)
+            return toast.error(`ERROR: ${err}`)
         }
+    }
+    const handleUserDetailsOnChange = (e) => {
+        const { name, value } = e.target
+        setUserData(prevData => ({ ...prevData, [name]: value }))
+    }
+    const handleUserResourceOnChange = (e) => {
+        const { name, value } = e.target
+        setUserResources(prevData => ({ ...prevData, [name]: value }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessageUserHandle(MESSAGES.checkingAvailability)
+        setWarningMsg(MESSAGES.checkingAvailability)
         setIsSaving(true)
         try {
             const res = await checkUserHandleExists({ userHandle })
             const { data: { exists, suggestion } } = res;
             if (exists) {
-                setMessageUserHandle(MESSAGES.userHandleSuggestion)
+                setWarningMsg(MESSAGES.userHandleSuggestion)
                 toast.error(`${MESSAGES.userHandleTaken}, You could use ${suggestion} or try to choose another name`,
                     { position: 'top-center', autoClose: 2500, })
                 setUserData({ ...userData, userHandle: suggestion })
@@ -237,7 +249,7 @@ const UserCheck = (() => {
             }
         } catch (err) {
             setIsSaving(false)
-            return toast.error(`${err}`)
+            return toast.error(`ERROR: ${err}`)
         }
     }
 
@@ -256,9 +268,8 @@ const UserCheck = (() => {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body className='userCheck-card-body'>
-                    <ErrorsModal />
                     {isVerifyInvite && !isLoading && <VerifyContributorLink contribData={contribData} />}
-                    {isLoading && <div style={{ marginTop: 150 }}><Loading /></div>}
+                    {isLoading && <div style={{ marginTop: 150 }}><LoadingIcon /></div>}
                     {!isVerifyInvite && !isLoading &&
                         <>
                             <Card.Text>
@@ -266,13 +277,15 @@ const UserCheck = (() => {
                                 <br />
                                 <cite>You can update these later in your profile page</cite>
                             </Card.Text>
-                            {messageUserHandle}
+                            <Form.Text className={'warning-text'}>{warningMsg}</Form.Text>
+
                             <InputGroup className='userCheck-input-group' size="sm">
                                 <FormControl
                                     type='text'
                                     className='bg-light form-control'
                                     placeholder={userHandle || 'Username'}
                                     value={userHandle}
+                                    name='userHandle'
                                     required
                                     onChange={(e) => { verifyUserHandleFormat(e.target.value); }} />
                             </InputGroup>
@@ -282,13 +295,15 @@ const UserCheck = (() => {
                                     className='bg-light form-control'
                                     placeholder={firstName || 'First Name'}
                                     value={firstName}
-                                    onChange={(e) => setUserData({ ...userData, firstName: e.target.value })} />
+                                    name='firstName'
+                                    onChange={handleUserDetailsOnChange} />
                                 <FormControl
                                     type='text'
                                     className='bg-light form-control'
                                     placeholder={lastName || 'Last Name'}
                                     value={lastName}
-                                    onChange={(e) => setUserData({ ...userData, lastName: e.target.value })} />
+                                    name='lastName'
+                                    onChange={handleUserDetailsOnChange} />
                             </InputGroup>
                             <InputGroup className='userCheck-input-group' size="sm">
                                 <FormControl
@@ -296,13 +311,15 @@ const UserCheck = (() => {
                                     className='bg-light form-control'
                                     placeholder={'Phone #'}
                                     value={mobilePhone}
-                                    onChange={(e) => setUserData({ ...userData, mobilePhone: e.target.value })} />
+                                    name='mobilePhone'
+                                    onChange={handleUserResourceOnChange} />
                                 <FormControl
                                     type='text'
                                     className='bg-light form-control'
                                     placeholder={address1 || 'Street'}
                                     value={address1}
-                                    onChange={(e) => setUserData({ ...userData, address1: e.target.value })} />
+                                    name='address1'
+                                    onChange={handleUserResourceOnChange} />
                             </InputGroup>
                             <InputGroup className='userCheck-input-group' size="sm">
                                 <FormControl
@@ -310,13 +327,15 @@ const UserCheck = (() => {
                                     className='bg-light form-control'
                                     placeholder={address2 || 'Apt #'}
                                     value={address2}
-                                    onChange={(e) => setUserData({ ...userData, address2: e.target.value })} />
+                                    name='address2'
+                                    onChange={handleUserResourceOnChange} />
                                 <FormControl
                                     type='text'
                                     className='bg-light form-control'
                                     placeholder={city || 'City'}
                                     value={city}
-                                    onChange={(e) => setUserData({ ...userData, city: e.target.value })} />
+                                    name='city'
+                                    onChange={handleUserResourceOnChange} />
                             </InputGroup>
                             <InputGroup className='userCheck-input-group' size="sm">
                                 <FormControl
@@ -324,16 +343,18 @@ const UserCheck = (() => {
                                     className='bg-light form-control'
                                     placeholder={state || 'State'}
                                     value={state}
-                                    onChange={(e) => setUserData({ ...userData, state: e.target.value })} />
+                                    name='state'
+                                    onChange={handleUserResourceOnChange} />
                                 <FormControl
                                     type='tel'
                                     className='bg-light form-control'
-                                    placeholder={newZipcode || 'ZIP Code'}
-                                    value={newZipcode || ''}
-                                    onChange={(e) => setUserData({ ...userData, newZipcode: e.target.value })} />
+                                    placeholder={zip || 'ZIP Code'}
+                                    value={zip || ''}
+                                    name='zip'
+                                    onChange={handleUserResourceOnChange} />
                             </InputGroup>
                             <InputGroup className='userCheck-input-group' size="sm">
-                                <CountryDropdown value={country} onChange={(e) => setUserData({ ...userData, country: e })} />
+                                <CountryDropdown value={country} onChange={(e) => setUserResources({ ...userResources, country: e })} />
                             </InputGroup>
                             <div className='userCheck-btn'>
                                 <Button

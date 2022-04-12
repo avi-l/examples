@@ -15,9 +15,8 @@ const ChangePasswordForm = observer(() => {
     const [isLoading, setIsLoading] = useState(false);
     const [oldPassword, setOldPassword] = useState('');
     const store = useContext(storeContext);
-    const { modalStore, loginStore } = store;
+    const { loginStore } = store;
     const { password, setPassword, passwordCopy, setPasswordCopy } = loginStore;
-    const { setShowErrorPopup } = modalStore;
     const history = useHistory()
 
     const onSuccess = (currentUser) => {
@@ -31,26 +30,28 @@ const ChangePasswordForm = observer(() => {
                 setPassword('')
                 setPasswordCopy('')
                 setOldPassword('')
-                setIsLoading(false)
             }
         };
         toast.success(`Success!`, toastOptions)
         const { email } = currentUser.attributes
+        const timestamp = Date()
         const MESSAGES = {
             subject: `REPLACE_HOSTNAME.Social Password Changed`,
-            body: `Hello ${currentUser.attributes.preferred_username || currentUser.attributes.username}! 
-              You have successfully changed your password. 
-              Thank you for taking security seriously. 
-              -REPLACE_HOSTNAME.Social Team`,
+            body: `
+            Hello ${currentUser.attributes.preferred_username || currentUser.attributes.username}! 
+            At ${timestamp} you successfully changed your password. 
+            Thank you for taking security seriously. 
+            -REPLACE_HOSTNAME.Social Security Team`,
         }
         sendEmailToUser({ email, subject: MESSAGES.subject, body: MESSAGES.body })
+        setIsLoading(false)
     }
 
     const onError = (res) => {
         const message = res.message || res;
-        const tryAgain = res.code !== 'LimitExceededException';
-        setShowErrorPopup({ show: true, message, tryAgain });
         setIsLoading(false);
+    toast.error(message, { position: 'top-center'})
+        return
     }
 
     const handleSubmit = async (event) => {
@@ -64,11 +65,11 @@ const ChangePasswordForm = observer(() => {
     }
 
     return (
-        <div classname='changePass-card-container'>
-            <div className='changePass-card-center'>
-                <Card >
-                    <Card.Header as='h5'>Change Password</Card.Header>
-                    <Card.Body>
+        <div className='changePass-card-html'>
+            <div className='changePass-card-wrapper'>
+                <Card className='changePass-card'>
+                    <Card.Header className='changePass-card-header'>Change Password</Card.Header>
+                    <Card.Body className='changePass-card-body'>
                         <Form onSubmit={handleSubmit}>
                             <Form.Group>
                                 <Form.Control
@@ -82,7 +83,7 @@ const ChangePasswordForm = observer(() => {
                                     required
                                 />
                             </Form.Group>
-                            <Form.Group className='input-group'>
+                            <Form.Group className='changePass-card-input-group'>
                                 <Form.Control
                                     type='password'
                                     id='inputPassword'
@@ -94,7 +95,7 @@ const ChangePasswordForm = observer(() => {
                                     required
                                 />
                             </Form.Group>
-                            <Form.Group className='input-group' >
+                            <Form.Group className='changePass-card-input-group' >
                                 <Form.Control
                                     type='password'
                                     id='passwordCopy'
@@ -106,39 +107,25 @@ const ChangePasswordForm = observer(() => {
                                     required
                                 />
                             </Form.Group>
-                            {password !== '' &&
-                                <Form.Group className='password-validator'>
+                            <Form.Group className='changePass-password-checklist'>
+                                {password !== '' &&
                                     <PasswordChecklist
-                                        rules={['length', 'specialChar', 'number', 'capital', 'match']}
+                                        rules={['minLength', 'specialChar', 'number', 'capital', 'match']}
                                         minLength={8}
                                         value={password}
                                         valueAgain={passwordCopy}
                                     />
-                                </Form.Group>}
-                            <Card.Footer className='btnGroup'>
-                                <ButtonGroup>
-                                    {!isLoading
-                                        ? <>
-                                            <Button
-                                                variant='primary'
-                                                type='sumbit'
-                                            >
-                                                Change
-                                            </Button>
-                                            <Button
-                                                variant='secondary'
-                                                onClick={() => history.push('/profile')}
-                                            >
-                                                Cancel
-                                            </Button>
-                                        </>
-                                        : <>
-                                            <Button variant='secondary' >
-                                                <i className='fas fa-spinner fa-pulse' /> Changing... &nbsp;
-                                            </Button>
-                                        </>
-                                    }
-                                </ButtonGroup>
+                                }
+                            </Form.Group>
+                            <Card.Footer className='changePass-card-footer'>
+                                    <Button 
+                                        block
+                                        variant='primary'
+                                        type='submit'
+                                        disabled={!oldPassword || password === '' || password !== passwordCopy}
+                                    >
+                                        {!isLoading ? 'Submit' : <span> Changing Password... &nbsp;<i className='fas fa-spinner fa-pulse' /></span> }
+                                    </Button>
                             </Card.Footer>
                         </Form>
                     </Card.Body>

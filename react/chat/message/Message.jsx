@@ -6,10 +6,8 @@ import { OverlayTrigger, Tooltip, Image } from 'react-bootstrap';
 const Message = (props) => {
     const { message, own, currentChat, loggedInUser,
         handleDeleteMessage, handleReplyMessage } = props;
-    //  console.log(message)
-    const replyQuote = message.replyQuoteText?.text;
-    const replyUserDetails = message.replyQuoteUserDetails;
-    const blankAvatar = '/images/blank-profile-picture-973460_960_720.png';
+    const { quotedMessageText, quotedMessageDeleted } = message;
+    const replyUserHandle = message.replyQuoteUserDetails?.userHandle || message.replyUserHandle;
 
     return (
         <>
@@ -33,26 +31,35 @@ const Message = (props) => {
                             <i className={message?.senderId === loggedInUser.userId
                                 ? 'fas fa-reply messageActionIcon own'
                                 : 'fas fa-reply messageActionIcon'}
-                                onClick={() => handleReplyMessage(message, currentChat?.userHandle)} />
+                                onClick={() => handleReplyMessage(message,
+                                    message?.senderId === loggedInUser.userId ? loggedInUser?.userHandle : currentChat?.userHandle)} />
                         </Tooltip>
                     }>
                     <div className='messageWrapper'>
                         <Image
                             className={'messageImg'}
-                            src={own ? loggedInUser?.avatar : currentChat?.avatar || blankAvatar}
+                            src={own ? loggedInUser?.avatar : currentChat?.avatar || process.env.REACT_APP_BLANK_USER_AVATAR}
+                            onError={({ currentTarget }) => {
+                                currentTarget.onerror = null; // prevents looping
+                                currentTarget.src = process.env.REACT_APP_BLANK_USER_AVATAR;
+                            }}
                             alt={own ? loggedInUser?.userHandle : currentChat?.userHandle} />
-
                         <div className='messageText'>
-                            <div className={own ? 'quotedMessageText own' : 'quotedMessageText'}>
-                                {replyUserDetails?.userHandle &&
-                                    <><div className={loggedInUser?.userHandle === replyUserDetails?.userHandle
-                                        ? 'quotedMessageUserHandle own'
-                                        : 'quotedMessageUserHandle'}>
-                                        {replyUserDetails?.userHandle}
-                                    </div></>
-                                }
-                                {replyQuote}
-                            </div>
+                            {quotedMessageText &&
+                                <div className={own ? 'quotedMessageText own' : 'quotedMessageText'}>
+                                    {replyUserHandle &&
+                                        <><div className={loggedInUser?.userHandle === replyUserHandle
+                                            ? 'quotedMessageUserHandle own'
+                                            : 'quotedMessageUserHandle'}>
+                                            {replyUserHandle}
+                                        </div></>
+                                    }
+                                   {quotedMessageText}  
+                                   {quotedMessageDeleted && 
+                                    <span className='quotedMessageTextDeleted'>{' '}(deleted)</span>
+                                   }
+                                </div>
+                            }
                             {message?.text}
                         </div>
                         <div className='messageDate'>

@@ -11,6 +11,8 @@ export class LoginStore {
     @observable
     passwordCopy = '';
     @observable
+    isPassValid = false;
+    @observable
     phoneNumber = '';
     @observable
     signUpVerifyCode = '';
@@ -55,6 +57,10 @@ export class LoginStore {
     @action
     setPasswordCopy = pw => {
         this.passwordCopy = pw;
+    }
+    @action
+    setIsPassValid = bool => {
+        this.isPassValid = bool;
     }
     @action
     setPhoneNumber = number => {

@@ -1,16 +1,19 @@
 import React from 'react';
 import { ListGroup } from 'react-bootstrap';
-import { ConvLoader } from '../Loaders';
+import { ConvLoader } from '../../shared/Loaders';
 import Conversations from './Conversations';
 
 const DisplayConversationMenu = (props) => {
     const { conversationData, onSelectConversation, loggedInUserId } = props;
-    // console.log(conversationData)
-    if (!conversationData.length) {
+
+    if (!onSelectConversation) {
         return (
             <>
                 <ListGroup className='chatMenuListgroup' >
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    {/* <ListGroup.Item className='chatMenuList'>
+                        No Conversations yet!
+                    </ListGroup.Item> */}
+                    {[...Array(10).keys()].map((i) => (
                         <ListGroup.Item
                             key={i}
                             className='chatMenuList'>
@@ -22,6 +25,7 @@ const DisplayConversationMenu = (props) => {
             </>
         )
     }
+
     return (
         <>
             <ListGroup className='chatMenuListgroup' >

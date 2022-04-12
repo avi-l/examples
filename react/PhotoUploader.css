@@ -1,0 +1,18 @@
+.photoUploader-Container {
+    text-align: center;
+    color: #8c8c8c; 
+    border: none !important;
+   
+}
+.photoUploader-imgDropzone {
+    cursor: pointer;
+}
+.photoUploader-imgDropzoneThumb {
+    max-width: 300px;
+    max-height: 300px;
+}
+.photoUploader-btnGroup {
+    /* padding: .75rem .75rem !important; */
+    background: transparent;
+    margin-bottom: -24px;
+}

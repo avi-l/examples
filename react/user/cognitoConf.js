@@ -6,17 +6,17 @@ export const awsconfig = {
         authenticationFlowType: 'USER_SRP_AUTH',
         mandatorySignIn: true,
         oauth: {
-            domain: 'dev01-REPLACE_HOSTNAME-social.auth.us-east-1.amazoncognito.com',
-            redirectSignIn: 'http://localhost:3010/userCheck/',
-            redirectSignOut: 'http://localhost:3010/',
+            domain: process.env.REACT_APP_AWS_OAUTH_DOMAIN,
+            redirectSignIn: process.env.REACT_APP_AWS_OAUTH_REDIRECT_SIGNIN,
+            redirectSignOut: process.env.REACT_APP_AWS_OAUTH_REDIRECT_SIGNOUT,
             responseType: 'code',
         },
     },
     API: {
         endpoints: [
             {
-                name: 'DEV01-USER-POOL',
-                endpoint: 'https://dev01-REPLACE_HOSTNAME-social.auth.us-east-1.amazoncognito.com'
+                name: process.env.REACT_APP_AWS_AUTH_API_NAME,
+                endpoint: process.env.REACT_APP_AWS_AUTH_API_ENDPOINT
             },
         ]
     }

@@ -6,49 +6,23 @@ class ModalStore {
     showShareModal = false;
 
     @observable
+    showSaveAssistantModal = {
+        show: false,
+        managersArray: [],
+        additionalReputationsArray:[],
+    };
+
+    @observable
     showCommentInput = false; //#
 
     @observable
-    showTrashPopup = { show: false, id: '', action: '', message: '', data: '' }
+    showTrashPopup = { show: false, id: '', action: '', message: '', data: {} }
 
     @observable
     showGuestPopup = false;
 
     @observable
     showUploadPicModal = { show: false, folder: '', action: '' }
-
-    @observable
-    showEditProfileModal = false;
-
-    @observable
-    showFollowersModal = {
-        show: false,
-        user: '',
-        loggedInUserId: '',
-        showType: '',
-    };
-    @observable
-    showStartChatModal = false;
-
-    @observable
-    showUserCardModal = {
-        show: false,
-        cardUserId: '',
-        loggedInUserId: ''
-    };
-
-    @observable
-    showErrorPopup = {
-        show: false,
-        message: '',
-        tryAgain: false,
-    };
-    @observable
-    showConfirmCancelPopup = {
-        show: false,
-        message: '',
-        action: '',
-    };
 
     @observable
     showVerifyModal = { result: '', tries: 0, phone: '', firstName: '', lastName: '' };
@@ -60,6 +34,11 @@ class ModalStore {
     @action
     setShowShareModal = bool => {
         this.showShareModal = bool;
+    };
+
+    @action
+    setShowSaveAssistantModal = obj => {
+        this.showSaveAssistantModal = obj;
     };
 
     @action
@@ -76,35 +55,9 @@ class ModalStore {
     setShowGuestPopup = (bool) => {
         this.showGuestPopup = bool;
     }
-
-    @action
-    setShowErrorPopup = pop => {
-        this.showErrorPopup = pop;
-    }
     @action
     setShowUploadPicModal = pop => {
         this.showUploadPicModal = pop;
-    }
-    @action
-    setShowEditProfileModal = pop => {
-        this.showEditProfileModal = pop;
-    }
-    @action
-    setShowFollowersModal = obj => {
-        this.showFollowersModal = obj;
-    }
-    @action
-    setShowStartChatModal = bool => {
-        this.showStartChatModal = bool;
-    }
-    @action
-    setShowUserCardModal = obj => {
-        this.showUserCardModal = obj;
-    }
-
-    @action
-    setShowConfirmCancelPopup = pop => {
-        this.showConfirmCancelPopup = pop;
     }
 
     @action

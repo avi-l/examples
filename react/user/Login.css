@@ -1,45 +1,114 @@
-
 .login-body{
-
-}
-.login-card {
-    margin-top: 50px;
-    border-radius: 10px;
-    padding: 20px;
-    width: 21rem;
-    text-align: left;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
     align-items: center;
-    flex-direction: column;
     justify-content: center;
+    background-color: rgb(240, 240, 240);
+}
+.login-card-container {
+   min-width: 75vw;
+    max-width: 75vw;
+    box-shadow: rgba(85, 85, 85, 0.858) 0px 7px 20px 0px;
+    border-radius: 8px;
+}
+.login-card-row {
+   min-height: 75vh; 
+}
+
+.login-right-col {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-repeat: no-repeat;
+    background-size:contain;
+    background-position:center;
+    background-color: #fff;
+    position: relative;
+}
+.login-left-col {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    background-color: #fff;
+    position: relative;
+   
+}
+.login-password-validator-card-valid {
+    background-color: #2987dad2;
+    position: absolute;
+    /* bottom: 0%;
+    margin-bottom: 10%;  */
+    top: 35%;
+    left: 15%;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+.login-password-validator-card {
+    background-color: #303030ee;
+    position: absolute;
+    /* bottom: 0%;
+    margin-bottom: 10%;  */
+    top: 35%;
+    left: 15%;
+    color: #3FB8AF;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.login-card {
     
-    /* box-shadow: 5px 10px 5px rgba(128, 128, 128, 0.644); */
+    /* padding: 15px; */
+    /* position: absolute;
+    top: 50%;
+    left: 50%; */
+    /* border-radius: 8px; */
+    border: none;
+    /* transform: translate(-50%, -50%); */
+    background-color: transparent;
+    object-fit: cover;
+    /* border: none; */
+    /* background-color: #fff; */
+    padding-top: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    /* width: 20rem; */
+   
 }
 .login-card-header {
-    width:16rem;
-    background-color: inherit;
-    
+    /* width:19rem; */
+    background-color: transparent;  
+    border-bottom: none !important;
+}
+.login-nav-tabs {
+    color: rgb(148,189,230);
     
 }
-.login-nav-tabs .login-nav-tabs.active {
-    /* background-color: #50595c48; */
+.login-nav-tab-selected {
+    color: #2986DA !important;
+    border-bottom: 1px solid #2986DA ;
 }
 .login-card-title {
-    color: #2986DA;
-    font-family: 'Lato', sans-serif;
+    color: #2986DA !important;
+    font-size: x-large;
+    font-weight: 500;
     text-align: center;
+    padding-bottom: 10px;
+}
+.login-input-group {
+    text-align: center !important;
     
 }
-.login-form-signin {
-    /* padding: 10px; */
-    width: 16rem;
-    margin: 0 auto;
-    
+.login-input {
+    /* border-top-left-radius: 25px !important;
+    border-bottom-left-radius: 25px !important;
+    border-top-right-radius: 25px !important;
+    border-bottom-right-radius: 25px !important; */
 }
 .login-btn {
-    /* width: auto; */
+
 }
 .login-form-social-buttons {
-    width: 6rem;;
+    width: 6rem;
     margin: 0 auto;
 
 }
@@ -83,5 +152,7 @@
 
 
 .login-card-body {
-
+    display: table;
+    margin: 0 auto;
+    width: 80%;
 }

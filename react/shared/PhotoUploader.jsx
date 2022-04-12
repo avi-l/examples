@@ -19,7 +19,7 @@ const PhotoUploader = observer((props) => {
     const { userStore } = store;
     const { user } = userStore;
     const CLOUDINARY_API_KEY = '423739633836172';
-    const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/lamplighter/image/upload'
+    const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/REPLACE_HOSTNAME/image/upload'
 
     const handleImageSelect = (e) => {
         setImageSrc(URL.createObjectURL(e[0]))

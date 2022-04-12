@@ -1,18 +1,35 @@
 .conversation {
     padding-left: 20px;
+    color: var(--chat-grey) !important;
+}
+.conversationRow {
+    padding-left: 20px;
+    color: var(--chat-grey) !important;
+}
+.conversationRow-selected {
+    padding-left: 20px;
+    color: var(--chat-secondary) !important;
 
 }
 .conversation-selected {
-    padding-left: 20px;
-    box-shadow: 4px 0 0 var(--primary) inset;
+    padding-left: 5px;
+    color: var(--chat-secondary) !important;
+    box-shadow: 2px 0 0 var(--chat-secondary) inset;
+    background-color: transparent !important;
 }
+.conversation-notification-dot {
+    height: 6px;
+    width: 6px;
+    background-color: var(--chat-secondary);
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    top: 15px;
+    left: -28px;
+  }
 
-
-
-.conversation:hover {
-    /* background-color: #301B3F; */
-}
 .conversationImg {
+    margin-left: 5px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -20,28 +37,35 @@
     /* margin-right: 20px; */
 }
 .conversationImgUnread {
+    margin-left: 5px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
     /* margin-right: 20px; */
-    border: 2px solid var(--primary);
+    border: 2px solid var(--chat-secondary);
 }
 .conversationName {
     font-weight: 500;
-    /* color: var(--lighter); */
-    color: var(--grey);
+    /* color: var(--chat-lighter); */
+    /* color: var(--chat-grey); */
 }
 .conversationTime {
     font-weight: 50;
     font-size: 8pt;
-    /* color: var(--lighter); */
-    color: var(--grey);
+    /* color: var(--chat-grey); */
 }
+.conversationRow:hover {
+    color: var(--chat-primary) !important;
+    -webkit-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    transform: scale(1.03);
+  }
+
 .conversationNewMsgIcon {
     padding: 5px;
     margin-left: 10px;
-    color: var(--secondary)
+    color: var(--chat-secondary)
 }
 .conversationTxtPreview {
     font-size: 10px;

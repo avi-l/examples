@@ -1,27 +1,29 @@
+.search-form-control {
+   margin-top: 8%;
+   margin-bottom: 5%;
+   border-radius: 25px;
+}
+
+.search-input-group {
+   height: auto;
+   position: relative;
+   margin-top: -20px;
+   padding-left: 20px;
+   padding-right: 20px;
+}
+
 .search-users-avatar {
    width: 40px;
    height: 40px;
    border-radius: 50%;
    object-fit: cover;
    margin-right: 20px;
+   
 }
 .search-users-list-group {
-   /* height: auto;
-   overflow: hidden auto;
-   overflow-x: hidden;
 
-   margin-bottom: 10px; */
-   overflow: hidden auto;
-   overflow-x: hidden;
-   padding-left: 10%;
-   padding-right: 10%;
-   display: flex;
-   align-items: left;
-   padding: 10px;
-   /* cursor: pointer; */
-   margin-top: 20px;
-   overflow-y: scroll;
-   height: 90%;
+   /* display: flex; */
+   text-align: left;
 }
 .search-users-list-item {
    height: 60px;
@@ -34,6 +36,7 @@
    margin-top: .5vh;
    padding: .175rem .65rem;
    float: right;
+   margin-right: 4px;
    text-transform: unset !important;
  
 }
@@ -41,14 +44,4 @@
    overflow-y: auto;
    max-height: 200px;
 }
-.search-input-group {
-   height: auto;
-   position: relative;
-   padding-left: 10%;
-   padding-right: 10%;
-}
-.search-form-control {
-   margin-top: 8%;
-   margin-bottom: 5%;
-   border-radius: 25px;
-}
+

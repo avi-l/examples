@@ -5,38 +5,30 @@ import storeContext from '../../../stores/storeContext';
 import { observer } from 'mobx-react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import PasswordChecklist from 'react-password-checklist'
+import { toast } from 'react-toastify';
 
 const PassResetForm = observer(() => {
     const store = useContext(storeContext);
-    const { modalStore, loginStore, userStore } = store;
+    const { loginStore, userStore } = store;
     const { password, setPassword,
         passwordCopy, setPasswordCopy } = loginStore;
     const { userObject } = userStore;
-    const { setShowErrorPopup } = modalStore;
     const [isLoading, setIsLoading] = useState(false);
-
-    const submitNewPassRequired = async () => {
-        try {
-            const res = await newPassRequired(userObject, password)
-            return res
-        } catch (error) {
-            return error;
-        }
-    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        console.log(userObject)
-        const res = await submitNewPassRequired()
-        console.log(res)
-        if (res.message) {
-            setShowErrorPopup({ show: true, message: res.message, tryAgain: true });
+        try {
+            const res = await newPassRequired(userObject, password)
+            if (res.message) {
+                setIsLoading(false);
+                return toast.warning(res.message);;
+            }
+            return forceReload('/userCheck');
+        } catch (error) {
             setIsLoading(false);
-            return;
+            return toast.error(`Error: ${error.message}`)
         }
-        return forceReload('/userCheck');
     };
 
     return (
@@ -66,35 +58,18 @@ const PassResetForm = observer(() => {
                     required
                 />
             </Form.Group>
-            {password !== '' &&
-                <Form.Group className='password-validator'>
-                    <PasswordChecklist
-                        rules={['length', 'specialChar', 'number', 'capital', 'match']}
-                        minLength={8}
-                        value={password}
-                        valueAgain={passwordCopy}
-                    />
-                </Form.Group>}
             <Form.Group className='input-group'>
-                {!isLoading &&
-                    <Button
-                        className='btn form-control submit'
-                        type='submit'
-                    >
-                        <i className='fas fa-user-plus' /> Confirm
-                    </Button>}
-            </Form.Group>
-            <Form.Group>
-                {isLoading &&
-                    <Button
-                        className='btn form-control submit'
-                        type='button'
-                        id='btn-signup'
-                    >
-                        Submitting... &nbsp;
-                        <i className='fas fa-spinner fa-pulse'></i>
-                    </Button>
-                }
+                <Button block
+                    className='submit'
+                    type='submit'
+                    disabled={isLoading || password === '' || password !== passwordCopy}
+                >
+                    {isLoading
+                        ? <> Submitting... &nbsp;
+                            <i className='fas fa-spinner fa-pulse'></i> </>
+                        : <><i className='fas fa-user-plus' /> Confirm</>
+                    }
+                </Button>
             </Form.Group>
         </Form>
     );

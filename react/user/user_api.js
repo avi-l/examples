@@ -3,12 +3,14 @@ import { currentRoute } from '../../currentRoute';
 
 /// get
 export const searchUsers = data => axios.get(currentRoute + '/users/searchUsers', {params: data});
-export const getFollowDetails = data => axios.get(currentRoute + '/users/getFollowDetails', {params: data});
+export const getFollowDetails = (route, data) => axios.get(currentRoute + route, {params: data});
+export const getUserStats = data => axios.get(currentRoute + '/users/getUserStats', {params: data});
 export const checkEmailExists = data => axios.get(currentRoute + '/users/checkEmailExists', {params: data});
 export const checkUserExists = data => axios.get(currentRoute + '/users/checkUserExists', {params: data});
 export const checkUserHandleExists = data => axios.get(currentRoute + '/users/checkUserHandleExists', {params: data});
 export const getUser = data => axios.get(currentRoute + '/users/getUser', {params: data})
 export const getUserComments = data => axios.get(currentRoute + '/comments/getUserComments', {params: data});
+export const amIfollowing = (route, data) => axios.get(currentRoute + route, {params: data});
 /// post
 export const getUserReps = data => axios.post(currentRoute + '/reputation/getUserReps', data);
 export const getUserFeedbacks = data => axios.post(currentRoute + '/feedbacks/getUserFeedbacks', data);

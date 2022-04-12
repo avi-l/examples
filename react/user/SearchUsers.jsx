@@ -13,13 +13,10 @@ const SearchUsers = observer(() => {
     const [searchTerm, setSearchTerm] = useState('')
     const [userDetails, setUserDetails] = useState([])
     const store = useContext(storeContext);
-    const { userStore, modalStore } = store;
-    const { user, profileUser, setProfileUser } = userStore;
-    const { setShowStartChatModal } = modalStore;
+    const { userStore } = store;
+    const { user } = userStore;
     const history = useHistory()
-    const blankAvatar = '/images/blank-profile-picture-973460_960_720.png';
 
-    const handleClose = () =>  setShowStartChatModal(false);
     const fetchUsers = async (e) => {
         setSearchTerm(e)
         if (!userDetails.length) {
@@ -31,33 +28,6 @@ const SearchUsers = observer(() => {
             }
         }
         if (e === '') setUserDetails([])
-    }
-    const followUnfollow = async (route, followee) => {
-        try {
-            const followeeObj = { userId: followee.userId }
-            const followerObj = { userId: user.userId }
-            await followUnfollowUser(route, { followee: followeeObj, follower: followerObj })
-            const userToFollowUnfollowIndex = userDetails.findIndex(I => I.userId === followee.userId);
-                const newUserDetailsArr = [...userDetails];
-                const newProfUserFollowingArr = [...profileUser.following]
-                if (route === '/users/follow') {
-                    newUserDetailsArr[userToFollowUnfollowIndex].followers.splice(0, 0, { userId: user.userId })
-                    if (profileUser.userId) {
-                        newProfUserFollowingArr.splice(0, 0, { userId: followee.userId })
-                        setProfileUser({ ...profileUser, following: newProfUserFollowingArr })
-                    }
-                }
-                else {
-                    newUserDetailsArr[userToFollowUnfollowIndex].followers.splice({ userId: user.userId })
-                    if (profileUser.userId) {
-                        const newFollowingArr = newProfUserFollowingArr.filter((val) => val.userId !== followee.userId)
-                        setProfileUser({ ...profileUser, following: newFollowingArr })
-                    }
-                }
-                setUserDetails(newUserDetailsArr)
-        } catch (error) {
-            toast.error(`${error}`, {position: 'top-center', autoClose: 2500})
-        }
     }
 
     return (
@@ -88,7 +58,6 @@ const SearchUsers = observer(() => {
                                                     <UserCard
                                                         cardUserId={item.userId}
                                                         loggedInUserId={user.userId}
-                                                        action={followUnfollow}
                                                     />
                                                 </Popover>
                                             }>
@@ -98,33 +67,21 @@ const SearchUsers = observer(() => {
                                                     setUserDetails([]);
                                                 }}>
                                                 <Image roundedCircle thumbnail className='circle search-users-avatar'
-                                                    src={item?.avatar || blankAvatar}
+                                                    src={item?.avatar || process.env.REACT_APP_BLANK_USER_AVATAR}
+                                                    onError={({ currentTarget }) => {
+                                                        currentTarget.onerror = null; // prevents looping
+                                                        currentTarget.src = process.env.REACT_APP_BLANK_USER_AVATAR;
+                                                    }}
                                                     alt={item.userHandle}
                                                 />
                                                 {'  '}
                                                 {item?.userHandle}
                                             </a>
                                         </OverlayTrigger>
-                                        {item.followers?.find(val => val.userId === user.userId)
-                                            ? <Button
-                                                variant='primary'
-                                                className='search-users-follow-btn'
-                                                onClick={() => {
-                                                    followUnfollow('/users/unfollow', item)
-                                                }}>Following</Button>
-                                            : <Button
-                                                variant='outline-primary'
-                                                className='search-users-follow-btn'
-                                                onClick={() => {
-                                                    followUnfollow('/users/follow', item)
-                                                }}>Follow</Button>
-                                        }
                                         <Button variant='outline-primary'
+                                        size='sm'
                                             className='search-users-follow-btn'
-                                            onClick={() => {
-                                                history.push('/chat/?_id=' + item?.userId)
-                                                handleClose();
-                                            }}
+                                            onClick={() => history.push('/chat/?friend=' + item?.userId)}
                                         >Message</Button>
                                     </ListGroup.Item>
                                 }

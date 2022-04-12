@@ -1,39 +1,37 @@
-import {forceReload} from '../../../utilities/forceReload';
-import React, {useContext, useState} from 'react';
-import { signIn, submitNewPassword} from '../userManagement';
+import { forceReload } from '../../../utilities/forceReload';
+import React, { useContext, useState } from 'react';
+import { signIn, submitNewPassword } from '../userManagement';
 import storeContext from '../../../stores/storeContext';
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import PasswordChecklist from 'react-password-checklist'
-import 'react-toastify/dist/ReactToastify.css';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const ForgotPasswordForm = observer(() => {
     const [isLoading, setIsLoading] = useState(false);
     const [verifyCode, setVerifyCode] = useState('');
     const store = useContext(storeContext);
-    const {modalStore, loginStore} = store;
-    const { username, password, setPassword, email, passwordCopy, setPasswordCopy} = loginStore;
-    const {setShowErrorPopup} = modalStore;
+    const { loginStore } = store;
+    const { username, password, setPassword,
+        email, passwordCopy, setPasswordCopy } = loginStore;
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
         submitNewPassword(username, verifyCode, password)
             .then(() => {
-                toast.success(`Password Succesfully Changed! Logging in now..`, {position: 'top-center'})
+                toast.success(`Password Succesfully Changed! Logging in now..`, { position: 'top-center' })
                 signIn(username, password)
                     .then(() => {
                         forceReload('/');
                     })
                     .catch((err) => {
-                        setShowErrorPopup({show: true, message: err.message});
+                        toast.error(err.message)
                         setIsLoading(false);
                     });
             })
-            .catch(async (err) => {
-                setShowErrorPopup({show: true, message: err.message, tryAgain: true});
+            .catch((err) => {
+                toast.error(err.message)
                 setIsLoading(false);
             });
     };
@@ -79,36 +77,18 @@ const ForgotPasswordForm = observer(() => {
                     required
                 />
             </Form.Group>
-            {password !== '' &&
-            <Form.Group className='password-validator'>
-                <PasswordChecklist
-                    rules={['length', 'specialChar', 'number', 'capital', 'match']}
-                    minLength={8}
-                    value={password}
-                    valueAgain={passwordCopy}
-                />
-            </Form.Group>}
-            <Form.Group className='input-group'>
-                {!isLoading &&
-                <Button
-                    className='btn form-control submit'
+            <Form.Group className='login-input-group'>
+                <Button block
+                    className='submit'
                     type='submit'
-                    disabled={!verifyCode}
+                    disabled={isLoading || password === '' || password !== passwordCopy || !verifyCode}
                 >
-                    <i className='fas fa-user-plus'/> Confirm
-                </Button>}
-            </Form.Group>
-            <Form.Group>
-                {isLoading &&
-                <Button
-                    className='btn form-control submit'
-                    type='button'
-                    id='btn-signup'
-                >
-                    Submitting... &nbsp;
-                    <i className='fas fa-spinner fa-pulse'></i>
+                    {isLoading
+                        ? <> Submitting... &nbsp;
+                            <i className='fas fa-spinner fa-pulse'></i> </>
+                        : <><i className='fas fa-user-plus' /> Confirm</>
+                    }
                 </Button>
-                }
             </Form.Group>
         </Form>
     );

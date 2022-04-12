@@ -1,132 +1,136 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Nav, Modal, ListGroup, Image } from 'react-bootstrap';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import storeContext from '../../../stores/storeContext';
-import { observer } from 'mobx-react';
 import './FollowersModal.css'
-import Loading from '../../shared/Loading';
-import { getFollowDetails } from '../user_api';
 import { toast } from 'react-toastify';
+import { getFollowDetails } from '../user_api';
+import { LoadingIcon } from '../../shared/Loaders';
 
-const FollowersModal = observer(() => {
-    const perPage = 8;
+const FollowersModal = (props) => {
+    const { show, type, user, loggedInUserId, close } = props;
+    const [showType, setShowType] = useState(type)
     const [isLoading, setIsLoading] = useState(true)
     const [displayFollow, setDisplayFollow] = useState([])
+    const perPage = 8;
     const [lastPosition, setLastPosition] = useState(perPage);
-    const [hasMore, setHasMore] = useState(true);
-    const store = useContext(storeContext);
-    const { modalStore } = store;
-    const { showFollowersModal, setShowFollowersModal } = modalStore;
-    const { showType, user, loggedInUserId, show } = showFollowersModal;
-    const blankAvatar = '/images/blank-profile-picture-973460_960_720.png';
+    const [hasMore, setHasMore] = useState(false);
+
+
+    const fetchFollowDetails = async () => {
+        try {
+            const route = showType === 'followers' ? '/follows/getFollowerDetails' : '/follows/getFollowingDetails'
+            const res = await getFollowDetails(route,
+                { userId: user.userId, skip: lastPosition, limit: perPage, })
+            console.log(res.data)
+            if (res.data.length < perPage) setHasMore(false)
+            else {
+                setHasMore(true)
+                setDisplayFollow(displayFollow.concat(res.data.map(U => U.userDetails)))
+                setLastPosition(lastPosition + perPage)
+            }
+        } catch (error) {
+            setHasMore(false)
+            toast.error(error, { position: 'top-center' })
+        }
+    }
 
     useEffect(() => {
-        (async () => {
-            if (user?.userId) {
-                setLastPosition(perPage)
-                setHasMore(true)
-                try {
-                    const res = await getFollowDetails({ userId: user?.userId, skip: 0, limit: perPage })
-                    setDisplayFollow(res.data)
-                    setIsLoading(false)
-                } catch (error) {
-                    setHasMore(false)
-                    toast.error(error, { position: 'top-center' })
-                }
+        const fetchInitialFollowerDetails = async () => {
+            setIsLoading(true)
+            setHasMore(true)
+            setDisplayFollow([])
+            try {
+                const route = showType === 'followers' ? '/follows/getFollowerDetails' : '/follows/getFollowingDetails'
+                const res = await getFollowDetails(route,
+                    { userId: user.userId, skip: 0, limit: 8, })
+                if (res.data.length < perPage) setHasMore(false)
+                setDisplayFollow(res.data.map(U => U.userDetails))
+                setIsLoading(false)
+            } catch (error) {
+                setHasMore(false)
+                toast.error(error, { position: 'top-center' })
             }
-        })()
-    }, [user])
-
-    const getMoreFollowers = async () => {
-        // let followArr = user[showType].slice(lastPosition, lastPosition + perPage)
-        // if (followArr.length) {
-        //     try {
-        //         const res = await getFollowDetails(followArr)
-        //         if (!res.data) setHasMore(false)
-        //         else {
-        //             setHasMore(true)
-        //             setDisplayFollow(displayFollow.concat(res.data))
-        //         }
-        //     } catch (error) {
-        //         setHasMore(false)
-        //         toast.error(error, { position: 'top-center' })
-        //     }
-        //     finally {
-        //         setLastPosition(lastPosition + perPage)
-        //     }
-        // }
-        // else setHasMore(false)
-    }
+        }
+        user?.userId && showType && fetchInitialFollowerDetails()
+    }, [showType, user])
 
     const handleClose = () => {
         setHasMore(false)
+        setLastPosition(0)
         setDisplayFollow([])
-        setShowFollowersModal({ show: false, user: '', loggedInUserId: '', showType: '' });
+        close();
     };
 
     return (
-        <div className='followers-modal'>
+        <div className='followers-modal' id='scrollableDiv'>
             <Modal className='followers-modal'
+                size='md'
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
                 show={show}
                 onHide={handleClose}
             >
                 <Modal.Body className='followers-modal-body'>
                     <Modal.Title className='followers-modal-title'>
-                        <Nav variant='tabs' justify defaultActiveKey={showType}>
-                            <Nav.Link eventKey='followers'
-                                onSelect={() => setShowFollowersModal({ show: true, user, loggedInUserId, showType: 'followers' })}
-                            >Followers
-                            </Nav.Link>
-                            <Nav.Link eventKey='following'
-                                onSelect={() => setShowFollowersModal({ show: true, user, loggedInUserId, showType: 'following' })}
-                            >Following
-                            </Nav.Link>
+                        <Nav className='followers-modal-nav' variant='tabs' justify defaultActiveKey={showType}>
+                            <Nav.Item as="li" >
+                                <Nav.Link eventKey='followers'
+                                    onSelect={() => setShowType('followers')}
+                                >Followers
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item as="li" >
+                                <Nav.Link eventKey='following'
+                                    onSelect={() => setShowType('following')}
+                                >Following
+                                </Nav.Link>
+                            </Nav.Item>
                         </Nav>
                     </Modal.Title>
                     <ListGroup variant='flush'>
-                        <div className='followers-keep-scrolling followers-modal-map followers-scrollable'>
-                            {/* <InfiniteScroll
+                        <div className='followers-modal-map followers-scrollable'>
+                            <InfiniteScroll
                                 className='followers-keep-scrolling'
-                                dataLength={displayFollow?.length||0}
-                                next={getMoreFollowers}
+                                dataLength={displayFollow?.length || 0}
+                                next={fetchFollowDetails}
                                 hasMore={hasMore}
+                                height={450}
                                 scrollableTarget='scrollableDiv'
-                                loader={<div className='mini-loader'>{hasMore ? <Loading /> : <p></p>}</div>}
-                            > */}
-                            <div id='scrollableDiv' className='followers-modal-map followers-scrollable'>
-                                {isLoading &&
-                                    <div className='loading' style={{ textAlign: 'center', marginLeft: '22%', marginRight: '22%', marginTop: '10%' }}>
-                                        <Loading />
-                                    </div>
-                                }
-                                {!displayFollow[showType]?.length && !isLoading
-                                    ? showType === 'followers'
-                                        ? <h6 style={{ marginLeft: '22%', marginRight: '22%', marginTop: '10%' }}>{user?.userHandle} has no {showType} yet...</h6>
-                                        : <h6 style={{ marginLeft: '22%', marginRight: '22%', marginTop: '10%' }}>{user?.userHandle} is not {showType} anyone yet...</h6>
-                                    : displayFollow[showType]?.map((val) => {
-                                        return (
-                                            <div key={val.userId} className='followers-list-item'>
-                                                <ListGroup.Item className='followers-list-item'>
-                                                    <a href={val.userId !== loggedInUserId ? '/profile/?_id=' + val?.userId : '/profile'}>
-                                                        <Image roundedCircle thumbnail className='circle followers-avatar'
-                                                            src={val?.avatar || blankAvatar}
-                                                            alt={val?.userHandle}
-                                                        />
-                                                        {'  '}
-                                                        <b>{val?.userHandle}</b>
-                                                    </a>
-                                                </ListGroup.Item>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                            {/* </InfiniteScroll> */}
+                                loader={<div className='mini-loader'>{hasMore ? <LoadingIcon /> : <p></p>}</div>}
+                            >
+                                <div className='followers-modal-map followers-scrollable'>
+                                    {!displayFollow?.length && !isLoading
+                                        ? showType === 'followers'
+                                            ? <h6 style={{ marginLeft: '22%', marginRight: '22%', marginTop: '10%' }}>{user?.userHandle} has no {showType} yet...</h6>
+                                            : <h6 style={{ marginLeft: '22%', marginRight: '22%', marginTop: '10%' }}>{user?.userHandle} is not {showType} anyone yet...</h6>
+                                        : displayFollow?.map((val, i) => {
+                                            return (
+                                                <div key={val.userId || i} className='followers-list-item'>
+                                                    <ListGroup.Item className='followers-list-item'>
+                                                        <a href={val.userId !== loggedInUserId ? '/profile/?_id=' + val?.userId : '/profile'}>
+                                                            <Image roundedCircle thumbnail className='circle followers-avatar'
+                                                                src={val?.avatar || process.env.REACT_APP_BLANK_USER_AVATAR}
+                                                                onError={({ currentTarget }) => {
+                                                                    currentTarget.onerror = null; // prevents looping
+                                                                    currentTarget.src = process.env.REACT_APP_BLANK_USER_AVATAR;
+                                                                }}
+                                                                alt={val?.userHandle}
+                                                            />
+                                                            {'  '}
+                                                            <b>{val?.userHandle}</b>
+                                                        </a>
+                                                    </ListGroup.Item>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </InfiniteScroll>
                         </div>
                     </ListGroup>
                 </Modal.Body>
             </Modal>
         </div>
     );
-})
+}
 export default FollowersModal;

@@ -12,8 +12,7 @@ const SignInForm = observer((props) => {
     const [isLoading, setIsLoading] = useState(false);
     const { contribData } = props;
     const store = useContext(storeContext);
-    const { modalStore, loginStore, userStore } = store;
-    const { setShowErrorPopup } = modalStore;
+    const { loginStore, userStore } = store;
     const { setEmail, username, setUsername, password, setPassword,
         setIsPassResetForm, setIsSignInForm, resetSignIn,
         setIsSendPassResetCodeForm, setIsVerifyContributorForm
@@ -34,21 +33,17 @@ const SignInForm = observer((props) => {
                     setIsLoading(false);
                 }
                 else if (user.code === 'UserNotFoundException') {
-                    setShowErrorPopup({ show: true, message: user.message, tryAgain: true })
-                    resetSignIn()
-                    setIsSignInForm(true)
+                    toast.error(user.message, { position: 'top-center' })
                     setIsLoading(false);
                 }
                 else if (user.code === 'NotAuthorizedException') {
-                    setShowErrorPopup({ show: true, message: user.message, tryAgain: true })
-                    resetSignIn()
-                    setIsSignInForm(true)
+                    toast.error(user.message, { position: 'top-center' })
                     setIsLoading(false);
                 }
                 else if (user.code === 'PasswordResetRequiredException') {
                     // const currentUser = // figure out how to get CognitoUser object
                     //  setUserObject(currentUser)
-                    toast.warning(`${user.message}`, { position: 'top-center' })
+                    toast.warning(user.message, { position: 'top-center' })
                     setPassword('');
                     setIsSignInForm(false);
                     setIsLoading(false);
@@ -60,10 +55,10 @@ const SignInForm = observer((props) => {
                                 setIsPassResetForm(true);
                                 setIsSignInForm(false);
                             }
-                            else setShowErrorPopup({ show: true, message: res.message })
+                            else toast.error(res.message, { position: 'top-center' })
                         })
                         .catch((err) => {
-                            setShowErrorPopup({ show: true, message: err.message });
+                            toast.error(err.message, { position: 'top-center' })
                         })
                 }
                 else {
@@ -76,19 +71,19 @@ const SignInForm = observer((props) => {
                 }
             }
         } catch (err) {
-            setShowErrorPopup({ show: true, message: err.message, tryAgain: true });
+            toast.error(err.message, { position: 'top-center' })
             setIsLoading(false);
         };
     };
 
     return (
         <Form className='login-form-signin' onSubmit={submitSignIn}>
-            <Form.Group className='login-input-group'>
+            <Form.Group>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                     type='username'
                     id='inputUsername'
-                    className='form-control'
+                    className='login-input'
                     placeholder='Username'
                     value={username}
                     disabled={isLoading}
@@ -101,7 +96,7 @@ const SignInForm = observer((props) => {
                 <Form.Control
                     type='password'
                     id='inputPassword'
-                    className='form-control'
+                    className='login-input'
                     placeholder='Password'
                     value={password}
                     disabled={isLoading}
@@ -111,8 +106,8 @@ const SignInForm = observer((props) => {
                 />
             </Form.Group>
             <Form.Group className='login-input-group'>
-                <Button
-                    className='btn login-btn form-control submit'
+                <Button block
+                    className='login-btn signin-btn'
                     type='submit'
                     disabled={!username || !password || isLoading}
                 >
@@ -123,35 +118,41 @@ const SignInForm = observer((props) => {
                 </Button>
             </Form.Group>
             {!isLoading && <>
-                <Form.Group className='login-form-social-buttons align-items-center'>
-                    <Form.Row className='align-items-center'>
-                        <Col xs='auto'>
+                <Form.Group className='login-input-group'>
+                    <Form.Row >
+                        <Col>
                             <Form.Label>
-                                Or sign in with
+                                - Or sign in with -
                             </Form.Label>
                         </Col>
                     </Form.Row>
                     <Form.Row>
-                        <Col xs='auto'>
-                            <i className='fab fa-facebook-f login-social-button'
+                        <Col>
+                            <i className='fab fa-facebook-f login-social-button' title='Sign in with Facebook'
                                 onClick={() => { setIsLoading(true); federatedSignIn('Facebook', contribData); }} />
-                            <i className='fab fa-google login-social-button'
+                            <i className='fab fa-google login-social-button' title='Sign in with Google'
                                 onClick={() => { setIsLoading(true); federatedSignIn('Google', contribData); }} />
                         </Col>
                     </Form.Row>
                 </Form.Group>
-                <Form.Group>
-                    <br></br>
-                    <Form.Label>
-                        Just want to browse?
-                    </Form.Label>
-                    <Button
-                        className='btn login-btn form-control submit'
-                        type='button'
-                        id='btn-stay-guest'
-                        onClick={() => { setIsLoading(true); forceReload('/') }}>
-                        <i className='fas fa-home' /> Be Our Guest!
-                    </Button>
+                <Form.Group className='login-input-group'>
+                    <Form.Row>
+                        <Col>
+                            <Form.Label>
+                                - Just want to browse? -
+                            </Form.Label>
+                        </Col>
+                    </Form.Row>
+                    <Form.Row>
+                        <Col>
+                            <Button block
+                                className='login-stay-guest-btn'
+                                type='button'
+                                onClick={() => { forceReload('/') }}>
+                                <i className='fas fa-home' /> Be Our Guest!
+                            </Button>
+                        </Col>
+                    </Form.Row>
                 </Form.Group></>}
         </Form>
     );

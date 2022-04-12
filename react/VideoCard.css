@@ -1,0 +1,48 @@
+.video-card {
+    cursor: pointer;
+    height: 250px;
+    max-height: 324px;
+    max-width: 200px;
+    min-width: 200px;
+    /* margin: 2px 2px 2px 2px; */
+    background-color: transparent !important;
+    margin: 2px;
+    /* border: 1 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06); */
+}
+/* .video-card:hover {
+    -webkit-transform: scale(1.03);
+	-ms-transform: scale(1.03);
+	transform: scale(1.03);
+} */
+.video-card-title, .video-card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+.video-card-title:hover, .video-card-text:hover {
+   
+}
+.video-card-loader {
+    padding: 10px;
+}
+.video-card-thumb {
+    height: 130px;
+    -webkit-box-reflect: below 4px
+        linear-gradient(transparent, transparent, rgba(0, 0, 0, 0.351));
+    -webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.video-card-below-body-text {
+    padding-left: 20px;
+    padding-bottom: 8px;
+}
+.video-card-uploaded-date {
+    font-size: 8pt;
+}
+.video-card-view-count {
+    font-size: 8pt;
+}

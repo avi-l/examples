@@ -1,0 +1,47 @@
+.messagePreviewNoMsgs {
+    width: 150px;
+    cursor: pointer;
+    color: #adb5bd !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 1.6;
+}
+.messagePreviewRow {
+    margin-top: 15px;  
+}
+.messagePreviewImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+  vertical-align: middle;
+    
+}
+.messagePreviewContent {
+    vertical-align: middle;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.messagePreviewUserHandle {
+    font-size: 14px;
+    font-weight: 500;
+}
+.messagePreviewText {
+    color: #adb5bd !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    line-height: 1.6;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    display: inline-block;
+
+}
+.messagePreviewDate {
+    text-align: right;
+    color: #adb5bd !important;
+    font-weight: 300 !important;
+    font-size: 10px !important;
+}

@@ -32,7 +32,7 @@ const ConfirmCancelModal = observer(() => {
             >
                 <Modal.Header>
                     <Modal.Title> <i className='far fa-lightbulb' />
-                        &nbsp; LampLighter.Social
+                        &nbsp; REPLACE_HOSTNAME.Social
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

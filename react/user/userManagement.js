@@ -77,6 +77,7 @@ export const isUserLoggedIn = async (isBypassCache) => {
         const res = await Auth.currentAuthenticatedUser({ bypassCache: isBypassCache })
         return res;
     } catch (error) {
+        console.log(error)
         return error;
     }
 };
@@ -104,57 +105,19 @@ export const cognitoEmailUsed = async (email) => {
         });
 }
 export const setUserInStore = async (setUser, isBypassCache) => {
-        const cognitoUser = await isUserLoggedIn(isBypassCache)
-        if (cognitoUser.attributes?.sub) {
-            const localDbUser = await getUser({ userId: cognitoUser.attributes.sub })
-            if (!localDbUser.data) {
-                setUser({
-                    userId: cognitoUser.attributes.sub,
-                })
-                return { existsInDB: false };
-            }
+    const cognitoUser = await isUserLoggedIn(isBypassCache)
+    if (cognitoUser.attributes?.sub) {
+        const localDbUser = await getUser({ userId: cognitoUser.attributes.sub, isFullDetails: true })
+        if (!localDbUser.data) {
             setUser({
                 userId: cognitoUser.attributes.sub,
-                userHandle: localDbUser.data?.userHandle,
-                firstName: localDbUser.data?.firstName,
-                lastName: localDbUser.data?.lastName,
-                isContributor: !!localDbUser.data?.contributorCode,
-                avatar: localDbUser.data?.avatar || '/images/blank-profile-picture-973460_960_720.png',
-                authProvider: localDbUser.data?.authProvider,
-                unreadMsgsUserIds: localDbUser.data?.unreadMsgsUserIds,
-                isAssistant: localDbUser.data?.isAssistant,
             })
-            return true;
+            return { existsInDB: false };
         }
-}
-
-export const setUserProfileData = async (profileUserId, setProfileUser, isFullDetails) => {
-        const localDbUser = await getUser({ userId: profileUserId, isFullDetails })
-        if (!localDbUser.data) {
-            return false;
-        }
-        setProfileUser({
-            userId: localDbUser.data?.userId,
-            userHandle: localDbUser.data?.userHandle,
-            authProvider: localDbUser.data?.authProvider,
-            email: localDbUser.data?.email,
-            firstName: localDbUser.data?.firstName,
-            lastName: localDbUser.data?.lastName,
-            mobilePhone: localDbUser.data?.mobilePhone,
-            avatar: localDbUser.data?.avatar || '/images/blank-profile-picture-973460_960_720.png',
-            followers: localDbUser.data?.followers,
-            following: localDbUser.data?.following,
-            address: {
-                address1: localDbUser.data?.address1,
-                address2: localDbUser.data?.address2,
-                city: localDbUser.data?.city,
-                state: localDbUser.data?.state,
-                zip: localDbUser.data?.zip,
-                country: localDbUser.data?.country,
-            },
-            unreadMsgsUserIds: localDbUser.data?.unreadMsgsUserIds
-        })
+        setUser(localDbUser.data)
         return true;
+    }
+    return false;
 }
 
 export const updateCognitoUserAttributes = async (user, attributes) => {
@@ -178,15 +141,6 @@ export const updateCognitoUserAttributes = async (user, attributes) => {
         return error;
     }
 }
-//verifyUser returns the 'sub' value from cognito, which is the userId
-export const verifyUser = async () => {
-    try {
-        const userId = await isUserLoggedIn(true)
-        return userId.attributes.sub;
-    } catch (error) {
-        return error;
-    }
-};
 
 export const deleteUserInAws = async (isBypassCache) => {
     try {

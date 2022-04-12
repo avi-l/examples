@@ -3,16 +3,14 @@ import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import Picker from 'emoji-picker-react';
 
 const DisplayEmojiPicker = (props) => {
-    const { newMessage, setNewMessage } = props;
-    const onEmojiClick = (e, emojiObject) => {
-        const text = newMessage + emojiObject.emoji;
-        setNewMessage(text);
-    };
+    const { onEmojiClick } = props;
+
     return (
         <>
             <OverlayTrigger
                 trigger='click'
                 rootClose
+                delay={100}
                 placement='top'
                 overlay={
                     <Popover id={'picker'} className='emojiPicker'>

@@ -27,28 +27,38 @@ export const reducer = (state, action) => {
             return { ...state, currentChat: action.payload };
         }
         case 'messages': {
+            
             return { ...state, messages: action.payload };
         }
         case 'deleteMessage': {
             return {
                 ...state,
-                messages: [...state.messages.filter((m) => m._id !== action.payload)]
+                messages: [...state.messages.filter((m) => m.messageId !== action.payload)]
             };
         }
         case 'newMessage': {
-            return { ...state, messages: [...state.messages, action.payload] };
+            if (state.currentChat?.userId === action.payload.receiverId || 
+                state.currentChat?.userId === action.payload.senderId) {
+                return { ...state, messages: [...state.messages, action.payload] };
+            }
+            return state;
         }
         case 'setQuotedMessage': {
-            return { ...state, 
-                quotedMessageId: action.payload.message._id, 
+            return {
+                ...state,
+                quotedMessageId: action.payload.message.messageId,
+                quotedMessageUserId: action.payload.message.senderId,
                 quotedMessageUserHandle: action.payload.quotedMessageUserHandle,
-                quotedMessageText: action.payload.message.text };
+                quotedMessageText: action.payload.message.text
+            };
         }
         case 'clearQuotedMessage': {
-            return { ...state, 
-                quotedMessageId: '', 
+            return {
+                ...state,
+                quotedMessageId: '',
                 quotedMessageUserHandle: '',
-                quotedMessageText: '' };
+                quotedMessageText: ''
+            };
         }
         case 'addMsgsToTop': {
             return { ...state, messages: [...action.payload, ...state.messages] };

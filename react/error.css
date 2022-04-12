@@ -1,0 +1,36 @@
+.error-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-repeat: no-repeat;
+    background-size:contain;
+    background-position:center;
+    background-color: #fff;
+}
+.error-page-container {
+   
+}
+.error-page-card {
+    background: transparent;
+    border: none;
+}
+
+.error-page-card-header, .error-page-card-footer {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+}
+
+.error-page-card-title {
+
+}
+.error-page-card-btn {
+    border-radius: 8px;
+}
+.error-page-card-text {
+  color: #2986DA;
+  font-size: 2.2rem;
+  text-align: center;
+}

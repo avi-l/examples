@@ -1,0 +1,40 @@
+.confirmCancel-modal{
+    --confirmCancel-modal-primary: #2986DA;
+    --confirmCancel-modal-secondary: #3FB8AF;
+ }
+ .confirmCancel-modal-header{
+    margin-top: 10px;
+    margin-bottom: -30px;
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    /* font-size: 16px; */
+    font-weight: 400;
+    align-items: center;
+    color: var(--confirmCancel-modal-primary);
+ }
+ .confirmCancel-modal-title{
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 400;
+    align-items: center;
+    color: var(--confirmCancel-modal-primary);
+ }
+ .confirmCancel-modal-body {
+    /* padding: 20px; */
+    margin-top: 20px;
+    font-weight: 300;
+    font-size: 1rem;
+    text-align: center;
+    position: relative;
+ }
+ .confirmCancel-modal-footer {
+    margin-bottom: 10px;
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    color: var(--confirmCancel-modal-secondary);
+ }

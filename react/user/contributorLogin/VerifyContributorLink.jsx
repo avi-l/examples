@@ -1,23 +1,18 @@
-import React, { useEffect, useContext, useState } from 'react';
-import storeContext from '../../../stores/storeContext';
+import React, { useEffect, useState } from 'react';
 import { checkContributorInvite, deactivateCode, getUser } from '../user_api';
-import { observer } from 'mobx-react';
 import { isUserLoggedIn, logout, updateCognitoUserAttributes } from '../userManagement';
-import Loading from '../../shared/Loading';
 import { forceReload } from '../../../utilities/forceReload';
 import { Button, Form } from 'react-bootstrap';
 import bcrypt from 'bcryptjs'
 import { toast } from 'react-toastify';
+import { LoadingIcon } from '../../shared/Loaders';
 
-const VerifyContributorLink = observer((props) => {
+const VerifyContributorLink = (props) => {
     const [isVerifying, setIsVerifying] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [passphrase, setPassphrase] = useState('')
     const [hashedPass, setHashedPass] = useState('')
     const { contribData: { contributorCode } } = props;
-    const store = useContext(storeContext);
-    const { modalStore } = store;
-    const { setShowErrorPopup } = modalStore;
     const EXPIRES_AFTER = 604800000; //seven days in milliseconds
     const MESSAGES = {
         invalidCode: `We are sorry, but ${contributorCode} is not a valid code. ` +
@@ -36,30 +31,29 @@ const VerifyContributorLink = observer((props) => {
     useEffect(() => {
         const checkIfAlreadyContrib = async () => {
             try {
-                const user = await isUserLoggedIn(false)
-                if(!user.attributes?.sub) return false;
+                const user = await isUserLoggedIn(true)
+                if (!user.attributes?.sub) return false;
                 const res = await getUser({ userId: user.attributes.sub })
                 return res;
-            } catch (error) { 
+            } catch (error) {
                 toast.error(`ERROR: ${error}`,
-                { position: 'top-center', onClose: () => logout() });
-             }
+                    { position: 'top-center', onClose: () => logout() });
+                return;
+            }
         }
 
         (async () => {
+            const toastOptions = { autoClose: 3000, position: 'top-center', onClose: () => forceReload('/') }
             if (contributorCode) {
                 const isCodeValid = await checkContributorInvite({ contributorCode })
                 if (!isCodeValid.data?.found) {
-                    setShowErrorPopup({ show: true, message: MESSAGES.invalidCode });
-                    return null
+                    return toast.error(MESSAGES.invalidCode, toastOptions)
                 }
                 else if (isCodeValid.data?.isUsed) {
-                    setShowErrorPopup({ show: true, message: MESSAGES.usedCode })
-                    return null;
+                    return toast.error(MESSAGES.usedCode, toastOptions)
                 }
                 else if (Date.now() > isCodeValid.data?.created + EXPIRES_AFTER) {
-                    setShowErrorPopup({ show: true, message: MESSAGES.expiredCode });
-                    return null
+                    return toast.error(MESSAGES.expiredCode, toastOptions)
                 }
                 else {
                     setHashedPass(isCodeValid.data.hashedPass)
@@ -71,11 +65,11 @@ const VerifyContributorLink = observer((props) => {
                 }
             }
         })();
-    }, [MESSAGES.expiredCode, MESSAGES.invalidCode, MESSAGES.usedCode, contributorCode, setShowErrorPopup])
+    }, [MESSAGES.expiredCode, MESSAGES.invalidCode, MESSAGES.usedCode, contributorCode])
 
     const getCognitoUserObject = async () => {
         try {
-            const res = await isUserLoggedIn(false);
+            const res = await isUserLoggedIn(true);
             return res;
         } catch (err) { return err }
     }
@@ -91,8 +85,7 @@ const VerifyContributorLink = observer((props) => {
         const passMatch = await bcrypt.compare(passphrase.toLowerCase(), hashedPass)
         if (!passMatch) {
             setIsVerifying(false)
-            setShowErrorPopup({ show: true, message: MESSAGES.invalidPass, tryAgain: true });
-            return;
+            return toast.error(MESSAGES.invalidPass)
         }
 
         const res = await getCognitoUserObject()
@@ -110,60 +103,62 @@ const VerifyContributorLink = observer((props) => {
         }
     }
 
-    if (isLoading) return <Loading />
+    if (isLoading) return (<div style={{textAlign: 'center'}}><LoadingIcon /></div> )
 
     return (
-        <Form className='login-form-signin' onSubmit={handleSubmit}>
-            <Form.Label>Please enter your passphrase to verify your invitation to become a Contributor. </Form.Label>
-            <Form.Label>If you just want to continue as a regular user, click 'Maybe Later' </Form.Label>
-            <Form.Group className='login-input-group'>
-                <Form.Label>Passphrase</Form.Label>
-                <Form.Control
-                    type='text'
-                    id='inputPassword'
-                    className='form-control'
-                    placeholder='Passphrase'
-                    value={passphrase}
-                    onChange={(e) =>
-                        setPassphrase(e.target.value)}
-                    required
-                />
-            </Form.Group>
-            <Form.Group className='login-input-group'>
-                <Form.Label>Code</Form.Label>
-                <Form.Control
-                    type='text'
-                    id='inputCode'
-                    className='form-control'
-                    placeholder='Code'
-                    disabled
-                    value={contributorCode}
-                />
-            </Form.Group>
-            <Form.Group className='login-input-group'>
-                <Button
-                    className='btn login-btn form-control submit'
-                    type='submit'
-                    disabled={isVerifying || isLoading || !passphrase}>
-                    {isVerifying
-                        ? <> Verifying... {'   '} <i className='fas fa-spinner fa-pulse'></i> </>
-                        : <><i className='fas fa-user-shield' /> Verify Invite</>
-                    }
-                </Button>
-                <hr />
-                <Button
-                    className='btn login-btn form-control submit'
-                    type='button'
-                    disabled={isVerifying || isLoading}
-                    onClick={() => maybeLater()}>
-                    {isLoading
-                        ? <><i className='fas fa-spinner fa-pulse'></i> </>
-                        : <><i className='fas fa-home' /> Maybe Later</>
-                    }
+        <>
+            <Form className='login-form-signin' onSubmit={handleSubmit}>
+                <Form.Label>Please enter your passphrase to verify your invitation to become a Contributor. </Form.Label>
+                <Form.Label>If you just want to continue as a regular user, click 'Maybe Later' </Form.Label>
+                <Form.Group className='login-input-group'>
+                    <Form.Label>Passphrase</Form.Label>
+                    <Form.Control
+                        type='text'
+                        id='inputPassword'
+                        className='form-control'
+                        placeholder='Passphrase'
+                        value={passphrase}
+                        onChange={(e) =>
+                            setPassphrase(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Form.Group className='login-input-group'>
+                    <Form.Label>Code</Form.Label>
+                    <Form.Control
+                        type='text'
+                        id='inputCode'
+                        className='form-control'
+                        placeholder='Code'
+                        disabled
+                        value={contributorCode}
+                    />
+                </Form.Group>
+                <Form.Group className='login-input-group'>
+                    <Button block
+                        className='btn login-btn form-control submit'
+                        type='submit'
+                        disabled={isVerifying || isLoading || !passphrase}>
+                        {isVerifying
+                            ? <> Verifying... {'   '} <i className='fas fa-spinner fa-pulse'></i> </>
+                            : <><i className='fas fa-user-shield' /> Verify Invite</>
+                        }
+                    </Button>
+                    <hr />
+                    <Button block
+                        className='btn login-btn form-control submit'
+                        type='button'
+                        disabled={isVerifying || isLoading}
+                        onClick={() => maybeLater()}>
+                        {isLoading
+                            ? <><i className='fas fa-spinner fa-pulse'></i> </>
+                            : <><i className='fas fa-home' /> Maybe Later</>
+                        }
+                    </Button>
+                </Form.Group>
+            </Form>
+        </>
 
-                </Button>
-            </Form.Group>
-        </Form>
     )
-});
+};
 export default VerifyContributorLink;

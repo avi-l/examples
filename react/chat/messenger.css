@@ -2,146 +2,162 @@
   width: 0; 
   background: transparent; 
 }
+.chat-page {
+  overflow: hidden;
+  width: 100vw;
+  height:100vh;
+  /* color: var(--light);   */
+  /* background-color: #000000; */
+  color: var(--chat-grey);
+}
 .chatContainer {
-  --lighter: #F3F2EF;
-  --lightest: #fff;
-  --darkest: rgb(15, 23, 36);
-  --primary: #2986DA;
-  --secondary: #3FB8AF;
-  --grey: #838584;
-  --border: rgba(219,219,219);
-  background-color: var(--lightest);
+  --chat-lighter: #F3F2EF;
+  --chat-lightest: #fff;
+  --chat-darkest: rgb(15, 23, 36);
+  --chat-primary: #2986DA;
+  --chat-secondary: #3FB8AF;
+  --chat-grey: #838584;
+  --chat-border: rgba(219,219,219);
+  /* background-color: #212121; */
+  background-color: var(--chat-lightest);
   margin-top:80px;
   border-radius: 8px;
   padding-bottom: 0px;
-  width: auto;
-  max-width: calc(100vw - 300px);
+  min-width: 85vw;
+  /* width: auto; */
+  /* max-width: calc(100vw - 300px); */
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid var(--border);
-
-}
-.chatBoxWrapper,
-.chatMenuWrapper {
+  /* border: 1px solid var(--chat-border); */
 
 }
 
 .chatMenu {
   padding-top: 20px;
   margin-left: inherit;
-  border-right: 1px solid var(--border);
-  /* background-color: var(--primary); */
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
+  /* border-right: 1px solid var(--chat-border); */
+  /* background-color: var(--chat-primary); */
+  /* border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px; */
   /* max-width: 265px; */
 } 
 
 .chatMenuHeader {
+  text-align: center;
   margin-left: auto;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--chat-border); */
   
 } 
 .chatMenuHeaderIcon {
   width: 30px;
   height: 30px;
-  padding-left: 45px;
-  padding-top: 3px;
-  /* color: var(--lighter); */
-  color: var(--primary);
+  padding-left: 10px;
+  margin-right: 10px;
+  /* padding-top: 3px; */
+  /* color: var(--chat-lighter); */
+  color: var(--chat-primary);
 }
 .chatMenuHeaderText {
   font-weight: 500;
   font-size: 18px;
   /* padding-left: 25px; */
-  /* color: var(--lighter); */
-  color: var(--primary);
+  /* color: var(--chat-lighter); */
+  color: var(--chat-primary);
 }
 
 .chatMenuListgroup {
+  margin-left: 20px;
+  margin-bottom: 5px;
   overflow-y: scroll;
   height: 72vh;
+  width: 100%;
   /* padding-right: 15px; */
   /* padding-right: -20px; */
-  margin-bottom: 0;
 }
 .chatMenuList {
-  background-color: transparent;
+  background-color: transparent !important;
   border: none;
   cursor: pointer;
+
 }
 
-.startChatWrapper {
-  padding-top: calc(100vh - 500px);
+.chatBoxWrapper {
+  height: 100%;
+  /* width: 600px; */
+  /* padding-top: 10px; */
+  /* padding-bottom: 10px; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
   position: relative;
-  align-content: center;
-  text-align: center;
-  
 }
-.startChatIcon:hover {
-  color: var(--secondary);
+.startChatWrapper {
+  cursor: pointer;
+  text-align: center;
+  color: var(--chat-grey);
+  width: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.startChatWrapper:hover {
+  color: var(--chat-primary);
 }
 .startChatIcon {
-  cursor: pointer;
-  color: var(--primary);
+ 
 }
 .startChatText {
-  color: var(--grey);
-  cursor: default;
-}
-.chatBox {
-  
-}
-.startChatWrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.chatBoxWrapper {
 
-  /* width: 600px; */
-  padding-top: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+}
+.chatBoxHeader {
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+
 }
 .chatBoxHeaderClose {
 
 }
-.chatBoxHeader {
-  font-size: 18px;
-  display: flex;
-  display:inline-block;
-  text-align:center;
-}
-.chatBoxHeaderOnClick {
-  display:inline-block;
-  text-align:center;
-}
 .chatBoxHeaderImg {
-  
-  border: 2px solid var(--primary);
-  width: 75px;
-  height: 75px;
+  border: 1px solid var(--chat-secondary);
+  width: 65px;
+  height: 65px;
   border-radius: 50%;
-  margin-top: 5px;
+  /* margin-top: 5px; */
+  margin-right: 15px;
+  float: left;
   /* margin-right: -20%; */
   /* margin-bottom: 4px; */
   cursor: pointer;
+  
 }
-.chatBoxHeaderName {
-  margin-right: 2%;
-  font-weight: 500;
+.chatBoxHeaderUserHandle {
+  font-size: 18px;
+  /* display: inline-block; */
   cursor: pointer;
-  color: var(--primary);
+  font-weight: 500;
+  margin-top: 15px;
+  margin-left: 15px;
+  color: var(--chat-secondary);
+  
+} 
+.chatBoxHeaderName {
+  font-size: 14px;
+  font-weight: 300;
+  margin-left: 15px;
+  cursor: pointer;
+  color: var(--chat-secondary);
+
 } 
 .chatBoxTop {
   /* overflow-y: scroll !important; */
   padding-right: 10px;
   padding-left: 10px;
-  /* margin-bottom: -33px; */
+  height: 100%;
   position: relative;
+  /* float: bottom; */
   
 }
 .chatBoxTopTypingBubble {
@@ -150,9 +166,11 @@
 }
 .keep-scrolling {
   overflow-y: scroll;
-  height: calc(100vh - 350px) !important;
-   max-height: calc(100vh - 330px) !important;
+  max-height: 60vh;
+  /* height: calc(100vh - 370px) !important; */
+   /* max-height: calc(100vh - 370px) !important; */
    position: relative;
+
 }
 .infiniteScroll {
   /* max-height: 402px; */
@@ -185,14 +203,12 @@
     padding: 10px;
     padding-left: 25px;
     margin-left: 25px;
-    /* border-radius: 40px; */
-    border: 1px solid var(--primary);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border-bottom-left-radius: 15px;
-    font-weight: 340;
-    color: var(--primary);
+    border: 1px solid var(--chat-secondary);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    font-weight: 300;
+    color: var(--chat-secondary);
     max-width: 100px;
     min-width: 100px;
     min-height: 40px;
@@ -207,7 +223,7 @@
   width: 8px;
   height: 8px;
   margin: 5px 5px 5px 5px;
-  background: var(--primary);
+  background: var(--chat-secondary);
   border-radius: 40px;
   opacity: 0;
   animation: loadingFade 1s infinite;
@@ -241,19 +257,23 @@
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
-  box-shadow: 4px 0 0 var(--primary) inset;
+  box-shadow: 4px 0 0 var(--chat-primary) inset;
   min-height: 50px;
   max-height: 150px;
   overflow-y: scroll;
   overflow-x: hidden;
   overflow-wrap: anywhere;
-  min-width: 200px;
-  max-width: 56vw;
+  /* min-width: 200px;
+  max-width: 56vw; */
+  min-width: 85%;
+  margin: auto;
   box-sizing: border-box;
-  background-color: rgba(208, 208, 208, 0.858);
+  color: var(--chat-primary);
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.824);
 }
 .replyQuoteUserHandle {
-    font-weight: 500;
+    font-weight: 600;
 }
 .replyQuoteText {
     /* word-wrap: break-word; */
@@ -281,21 +301,21 @@
 }
 
 .chatBoxBottom {
-  margin-top: 45px;
-  border: none;
-  margin-left: 1px;
-  position: relative;
-
-  /* background-color: red; */
-  /* background-color: var(--lightest); */
-  /* z-index: 5; */
+  /* background-color: var(--chat-lightest); */
+  position: absolute;
+  width: 90%;
+  padding-bottom: 10px;
+  padding-top: 8px;
+  margin: auto;
 }
 
 
 .chatMessageInput, .chatMessageInput:focus, .chatMessageInput:visited {
+  /* margin-top: 15px; */
   border-radius: 50px !important;
-  border-color: var(--grey) !important;
-  /* background-color: red; */
+  border-color: var(--chat-primary) !important;
+  background-color: transparent;
+  /* color: var(--chat-lightest); */
 }
 
 .emojiPicker {
@@ -303,7 +323,7 @@
   /* box-shadow: none; */
 }
 .chatMessageIcon {
-  color: var(--grey);
+  color: var(--chat-primary);
 }
 
 .chatMessageEmojiBtn, .chatMessageEmojiBtn:hover, .chatMessageEmojiBtn:visited{
@@ -315,7 +335,7 @@
   cursor: pointer;
   margin: auto;
   text-align: center;
-  color: var(--grey);
+  color: var(--chat-primary);
 }
 
 .chatMessageSendBtn, .chatMessageSendBtn:hover, .chatMessageSendBtn:visited {
@@ -340,19 +360,12 @@
 }
 
 .chatMessageScrollBtnIcon {
-  color: var(--grey);
+  color: var(--chat-primary);
 }
 .chatMessageScrollBtn:hover {
   background-color: transparent !important;
 }
 
-.chatUserCard {
-
-  
-}
-.chatUserCardWrapper {
-
-}
 .chatUserCardHeader {
   padding-top: 20px ;
 }

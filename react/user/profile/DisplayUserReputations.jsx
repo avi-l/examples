@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { getUserReps } from '../user_api'
-import Loading from '../../shared/Loading';
-import { ListGroup, Nav, ProgressBar } from 'react-bootstrap';
+import { Card, ListGroup, Nav, ProgressBar } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { ListLoader } from '../../shared/Loaders';
 
 const DisplayUserReps = (props) => {
     const { userId, userHandle } = props
@@ -14,6 +14,7 @@ const DisplayUserReps = (props) => {
         (async () => {
             try {
                 const res = await getUserReps({ userId, limit: 35 })
+                console.log(res.data)
                 setReps(res.data)
             } catch (error) {
                 console.error(error)
@@ -22,43 +23,38 @@ const DisplayUserReps = (props) => {
         })();
     }, [userId])
 
-    if (isLoading) {
-        return (
-            <div className='loading' style={{ textAlign: 'center' }}> <Loading /></div>
-        )
-    }
     return (
-        <div className='profile-display-reputations'>
-            <h6 className='d-flex align-items-center profile-mb-3'>
-                <i className='fas fa-balance-scale'
-                    style={{ marginTop: '7px', marginRight: '.5rem', fontSize: '20px' }}></i>
-                <Nav justify variant='tabs' defaultActiveKey={'Reps'}>
-                    <Nav.Link eventKey='Reps'>Reputations</Nav.Link>
-                </Nav>
-            </h6>
-            <ListGroup>
-                <div className='profile-rep-map profile-scrollable'>
-                    {!reps.length && !isLoading ? <small>{userHandle} has no reputations yet</small>
-                        : reps.map((val) => {
-                            return (
-                                <ListGroup.Item
-                                    className='reputation-listItem'
-                                    key={val._id}
-                                    action
-                                    onClick={() => history.push(`/channelPage?channel=${val.channelInfo[0]?.title}`)}
-                                >
-                                    <span className='material-icons text-info mr-2' style={{ fontSize: '18px' }}>
-                                        ondemand_video
-                                    </span>{'  '}
-                                    <small>{val.channelInfo[0]?.title} Channel</small>
-                                    <ProgressBar variant='info' now={val.reputation} label={val.reputation} />
-                                </ListGroup.Item>
-                            )
-                        })
-                    }
+        // <Card className='profile-card profile-h-100'>
+        //     <Card.Body className='profile-card-body'>
+                <div className='profile-display-reputations'>
+                {/* <Nav className='remarks-nav' justify >
+                   <Nav.Link className='remarks-nav-active-tab'>Reputations</Nav.Link> 
+                    </Nav> */}
+                    <ListGroup variant='flush' className='remarks-list'>
+                        <div className='profile-rep-map profile-scrollable'>
+                        {isLoading && <ListLoader />}
+                            {!reps.length && !isLoading ? <small>{userHandle} has no reputations yet</small>
+                                : reps.map((val) => {
+                                    return (
+                                        <ListGroup.Item
+                                            className='remark-listItem '
+                                            key={val.reputationId}
+                                            onClick={() => history.push(`/channelPage?channel=${val.channelInfo[0]?.channelId}`)}
+                                        >
+                                            <i className='fas fa-tv profile-sidebar-icon'></i>
+                                            {'  '}
+                                            <small>{val.channelInfo[0]?.title} Channel</small>
+
+                                            <ProgressBar className='profile-reputation-bar' now={val.reputation} label={parseInt(val.reputation)} />
+                                        </ListGroup.Item>
+                                    )
+                                })
+                            }
+                        </div>
+                    </ListGroup>
                 </div>
-            </ListGroup>
-        </div>
+        //     </Card.Body>
+        // </Card>
     )
 }
 export default DisplayUserReps;

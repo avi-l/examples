@@ -2,36 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    address1: String,
-    address2: String,
+    userId: String,
+    addedAt: Number,
+    authProvider: String,
     avatar: String,
-    cardNumber: String,
-    city: String,
-    country: String,
-    creator: Boolean,
-    cvc: String,
-    email: String,
-    expiration: String,
+    contributorCode: String,
     firstName: String,
     lastName: String,
-    mobilePhone: String,
-    nameOnCard: String,
-    reputation: Number,
-    state: String,
+    isContributor: {type: Boolean, default: false},
+    isActive: {type: Boolean, default: true},
     userHandle: String,
-    userId: String,
-    zip: String,
-    contributorCode: String,
-    isAssistant: Boolean,
-    authProvider: String,
-    active: Boolean,
-    deprecated: Boolean,
-    documentId: String,
-    isAssistant: Boolean,
-    assistantRecord: [Schema.Types.Mixed],
-    followers: [],
-    following: [],
-    unreadMsgsUserIds: []
 });
 
-module.exports = mongoose.model('Users', UserSchema);
+module.exports = mongoose.model('users', UserSchema);
