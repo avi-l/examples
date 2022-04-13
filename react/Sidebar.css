@@ -1,0 +1,112 @@
+.sidebar-hamburger-icon {
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+.sidebar-menu-card {
+    /* max-width: 250px;   */
+    /* height: 100vh; */
+    border: none;
+    /* align-items: center; */
+    /* border-radius: 0; */
+    background-color: transparent;
+ }
+ 
+ .sidebar-menu-card-body {
+    background-color: transparent;
+ }
+.sidebar-open-icon { 
+    cursor: pointer;
+    margin-left: 10px;
+    color: #fff;
+}
+.sidebar-close-icon { 
+    cursor: pointer;
+    float: right;
+    padding-right: 5px;
+    padding-top: 5px;
+    font-size: 12pt;
+    color: rgb(157, 157, 157);
+}
+.sidebar-avatar {
+    margin-bottom: 5px;
+    height: 110px;
+    width: 110px;
+ }
+ .sidebar-clickable-icon { 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 30px;
+  }
+.sidebar-avatar-container {
+    position: relative;
+    margin: auto;
+    height: 110px;
+    width: 110px;
+}
+.sidebar-avatar-overlay {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    border-radius: 50%;
+    background-color: rgba(125, 125, 125, 0.591);
+  }
+  .sidebar-avatar-container:hover .sidebar-avatar-overlay {
+    opacity: 1;
+  }
+  .sidebar-userHandle {
+      text-align: center;
+      font-weight: 500;
+      font-size: 14pt;
+      padding: 10px;
+  }
+  .sidebar-user-name {
+    text-align: center;
+  }
+  .sidebar-follow {
+    cursor: pointer;
+    border: none;
+    padding-bottom: .1px;
+    text-align: center;
+    background-color: transparent;
+
+ 
+ }
+ .sidebar-following:hover {
+    color: #2986DA !important;
+ }
+ .sidebar-followers:hover {
+    color: #2986DA !important;
+ }
+  .sidebar-follow-count {
+    font-weight: 500;
+    font-size: 14pt;
+  
+ }
+ .sidebar-follow-text {
+    font-weight: 300;
+    font-size: 10pt;
+    
+ }
+  .sidebar-listgroup-item {
+    background-color: transparent;
+    cursor: pointer;
+    padding: 10px;
+    text-align: left;
+    border: none;
+   
+ }
+ .sidebar-listgroup-item:hover {
+    color:  #2986DA !important;
+}
+
