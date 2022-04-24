@@ -16,8 +16,6 @@
 .DS_Store
 .env
 .htpassword
-*.htpassword
-*/*keys.js
 
 npm-debug.log*
 yarn-debug.log*
